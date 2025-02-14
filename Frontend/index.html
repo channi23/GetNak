@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (email && password) {
+                window.location.href = 'home.html';
+            } else {
+                alert('Please enter valid login details');
+            }
+        }
+        function gotohome(){
+            window.location.href="home.html";
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="loginstyle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-section">
+            <h1>Login to Your Account</h1>
+            <p>Login using social networks</p>
+            <div class="social-buttons">
+                <button class="facebook">Facebook</button>
+                <button class="google">Google</button>
+                <button class="linkedin">LinkedIn</button>
+            </div>
+            <p class="separator">OR</p>
+            <form>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button class="login-btn" onclick="gotohome()">Sign In</button>
+            </form>
+        </div>
+        <div class="signup-section">
+            <h2>New Here?</h2>
+            <p>Sign up and discover a great amount of new opportunities!</p>
+            <button class="signup-btn">Sign Up</button>
+        </div>
+    </div>
+</body>
+</html>

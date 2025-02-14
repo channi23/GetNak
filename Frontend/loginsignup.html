@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <link rel="stylesheet" href="auth.css">
+    
+    <!-- Google OAuth & Cloudflare Turnstile -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Box -->
+        <div class="auth-box" id="login-box">
+            <h2>Login</h2>
+
+            <!-- Google Sign-In Button -->
+            <div id="g_id_onload"
+                data-client_id="109076471452-bbpi35er4s8f88dr3c7e4oh637uk3hf1.apps.googleusercontent.com"
+                data-auto_prompt="false"
+                data-callback="handleGoogleLogin">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-theme="light" data-size="normal"></div>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+        </div>
+
+        <!-- Signup Box -->
+        <div class="auth-box" id="signup-box" style="display: none;">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+                <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-theme="light" data-size="normal"></div>
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+
+    <footer>
+        <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+    </footer>
+</body>
+</html>

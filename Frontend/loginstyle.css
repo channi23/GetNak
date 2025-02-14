@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f8f9fa;
+}
+
+.container {
+    display: flex;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 800px;
+    width: 100%;
+}
+
+.login-section {
+    flex: 2;
+    padding: 40px;
+}
+
+.login-section h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-buttons button {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.social-buttons .facebook {
+    background: #4267B2;
+}
+
+.social-buttons .google {
+    background: #DB4437;
+}
+
+.social-buttons .linkedin {
+    background: #0077B5;
+}
+
+.separator {
+    text-align: center;
+    margin: 20px 0;
+    color: #aaa;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+form input[type=\"password\"] {
+    position: relative;
+}
+
+form input:focus {
+    border-color: #008080;
+    outline: none;
+}
+
+.login-btn {
+    background: #20c997;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-btn:hover {
+    background: #17a589;
+}
+
+.signup-section {
+    flex: 1;
+    background: linear-gradient(135deg, #20c997, #0d7377);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.signup-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.signup-section p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup-btn {
+    background: #fff;
+    color: #20c997;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.signup-btn:hover {
+    background: #f1f1f1;
+}
