@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <!-- Link to your shared CSS file -->
+  <link rel="stylesheet" href="auth.css" />
+  
+  <!-- Google OAuth (required for Google Sign-In) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Cloudflare Turnstile (if you still need it) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <!-- Optional Back Button -->
+  <button class="back-button" onclick="history.back()">Back</button>
+
+  <div class="auth-container">
+    <!-- Logo (optional) -->
+    <div class="auth-logo">
+      <div class="placeholder-logo"></div>
+    </div>
+
+    <!-- Heading -->
+    <h1>Yooo, welcome back!</h1>
+    <p class="subtext">
+      First time here?
+      <!-- Link to the separate signup page -->
+      <a href="signup.html">Sign up for free</a>
+    </p>
+
+    <!-- GOOGLE SIGN-IN BUTTON (placed above the normal form) -->
+    <div
+      id="g_id_onload"
+      data-client_id="YOUR_GOOGLE_CLIENT_ID"
+      data-auto_prompt="false"
+      data-callback="handleGoogleLogin"
+    ></div>
+    <div class="g_id_signin" data-type="standard"></div>
+
+    <!-- Divider or "OR" text between Google button and normal sign-in -->
+    <p class="or-divider">or</p>
+
+    <!-- LOGIN FORM -->
+    <form class="auth-form" id="login-form">
+      <input
+        type="email"
+        id="login-email"
+        placeholder="Your email"
+        required
+      />
+      <input
+        type="password"
+        id="login-password"
+        placeholder="••••••••"
+        required
+      />
+      <button type="submit" class="primary-btn">Sign in</button>
+    </form>
+
+    <!-- Single Sign-On (SSO) Option -->
+    <p class="or-divider">or</p>
+    <button class="secondary-btn">
+      Single sign-on (SSO)
+    </button>
+
+    <!-- Legal Text -->
+    <p class="legal-text">
+      You acknowledge that you read, and agree, to our
+      <a href="#" target="_blank">Terms of Service</a> and
+      <a href="#" target="_blank">Privacy Policy</a>.
+    </p>
+  </div>
+
+  <!-- Footer (optional) -->
+  <footer>
+    <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+  </footer>
+
+  <!-- Your JS (if you have any custom logic) -->
+  <script>
+    // 1) Handle Google Login callback
+    function handleGoogleLogin(response) {
+      // This object includes various token data and user info
+      console.log("Google login callback:", response);
+      // You can process the credential or ID token as needed:
+      // e.g., send it to your backend to authenticate the user
+    }
+
+    // 2) Example: Handle normal login form
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      // Insert your actual login logic
+      alert('Logged in via email/password!');
+    });
+  </script>
+</body>
+</html>
