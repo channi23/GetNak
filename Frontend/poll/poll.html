@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .navbar .hamburger {
+            display: none;
+            color: white;
+            font-size: 24px;
+            padding: 14px 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .brand {
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            float: left;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 60px;
+            transition: 0.5s;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 16px;
+            transition: margin-left 0.5s;
+        }
+
+        #discord-container {
+            background-color: #36393f;
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+        }
+
+        .discord-members {
+            margin-top: 20px;
+        }
+
+        .member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #2f3136;
+        }
+
+        .member img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .member-name {
+            font-weight: bold;
+        }
+
+        .member-status {
+            margin-left: auto;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .online {
+            background-color: #43b581;
+        }
+
+        .idle {
+            background-color: #faa61a;
+        }
+
+        .offline {
+            background-color: #747f8d;
+        }
+
+        .discord-channels {
+            margin-top: 20px;
+        }
+
+        .channel {
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            background-color: #2f3136;
+            cursor: pointer;
+        }
+
+        .channel:hover {
+            background-color: #42464d;
+        }
+
+        .discord-join {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .join-button {
+            background-color: #7289da;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .join-button:hover {
+            background-color: #5b6eae;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .navbar .hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" class="brand">Community</a>
+        <div class="hamburger" onclick="toggleSidebar()">☰</div>
+    </div>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="home.html">Home</a>
+        <a href="../upload/upload.html">Upload</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../poll/poll.html">Poll</a>
+        <a href="../aboutus.html">About us</a>
+        <a href="../contactus.html">Support</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Join Our Community</h1>
+        <p>Connect with other members of our community through our Discord server!</p>
+        
+        <div id="discord-container">
+            <h2>Discord Server</h2>
+            <div id="discord-widget">Loading Discord data...</div>
+            
+            <div class="discord-channels">
+                <h3>Popular Channels</h3>
+                <div class="channel"># general</div>
+                <div class="channel"># help</div>
+                <div class="channel"># announcements</div>
+            </div>
+            
+            <div class="discord-members">
+                <h3>Online Members</h3>
+                <div id="members-list">
+                    <!-- This will be populated by the Discord API -->
+                </div>
+            </div>
+            
+            <div class="discord-join">
+                <button class="join-button" id="join-discord">Join Our Discord</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar function for mobile view
+        function toggleSidebar() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.querySelector(".main-content");
+            
+            if (sidebar.style.width === "250px") {
+                sidebar.style.width = "0";
+                mainContent.style.marginLeft = "0";
+            } else {
+                sidebar.style.width = "250px";
+                if (window.innerWidth > 768) {
+                    mainContent.style.marginLeft = "250px";
+                }
+            }
+        }
+
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.querySelector(".main-content");
+            
+            if (window.innerWidth > 768) {
+                sidebar.style.width = "250px";
+                mainContent.style.marginLeft = "250px";
+            } else {
+                sidebar.style.width = "0";
+                mainContent.style.marginLeft = "0";
+            }
+        });
+
+        // Discord API integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace 'YOUR_DISCORD_SERVER_ID' with your actual Discord server ID
+            const DISCORD_SERVER_ID = 'YOUR_DISCORD_SERVER_ID';
+            
+            // Load Discord widget
+            const widgetScript = document.createElement('script');
+            widgetScript.src = `https://discord.com/api/guilds/${DISCORD_SERVER_ID}/widget.json?callback=handleDiscordData`;
+            document.body.appendChild(widgetScript);
+            
+            // Set Discord invite link - replace with your actual invite link
+            document.getElementById('join-discord').addEventListener('click', function() {
+                window.open('https://discord.gg/YOUR_INVITE_CODE', '_blank');
+            });
+        });
+
+        // Callback function for Discord data
+        function handleDiscordData(data) {
+            if (data.members && data.members.length > 0) {
+                const membersList = document.getElementById('members-list');
+                membersList.innerHTML = '';
+                
+                // Display up to 5 online members
+                const displayCount = Math.min(data.members.length, 5);
+                for (let i = 0; i < displayCount; i++) {
+                    const member = data.members[i];
+                    const memberDiv = document.createElement('div');
+                    memberDiv.className = 'member';
+                    
+                    // Create member avatar
+                    const avatar = document.createElement('img');
+                    avatar.src = member.avatar_url || 'default-avatar.png';
+                    avatar.alt = member.username;
+                    
+                    // Create member name
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'member-name';
+                    nameSpan.textContent = member.username;
+                    
+                    // Create status indicator
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'member-status';
+                    statusDiv.classList.add(member.status);
+                    
+                    memberDiv.appendChild(avatar);
+                    memberDiv.appendChild(nameSpan);
+                    memberDiv.appendChild(statusDiv);
+                    membersList.appendChild(memberDiv);
+                }
+            } else {
+                document.getElementById('members-list').innerHTML = '<p>No members online right now.</p>';
+            }
+            
+            // Update widget display
+            document.getElementById('discord-widget').innerHTML = `
+                <p>Server Name: ${data.name}</p>
+                <p>Online Members: ${data.presence_count}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
