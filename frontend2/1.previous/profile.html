@@ -6,7 +6,7 @@
   <style>
     body {
       margin: 0;
-      background-color: #121212; /* Dark background */
+      background-color: #121212;
       color: #ffffff;
       font-family: sans-serif;
     }
@@ -15,7 +15,6 @@
       min-height: 100vh;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 220px;
       background-color: #1a1a1a;
@@ -27,7 +26,7 @@
       text-decoration: none;
       margin-bottom: 15px;
       font-weight: 500;
-      cursor: pointer; /* Important for indicating it's clickable */
+      cursor: pointer;
     }
     .sidebar a:hover {
       color: #cccccc;
@@ -37,20 +36,33 @@
       display: inline-block;
     }
 
-    /* Main Content */
     .content {
       flex: 1;
       padding: 20px;
+      position: relative;
     }
 
-    /* Section Headings */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #2d2d2d;
+      color: #ffffff;
+      border: 1px solid #444;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #3a3a3a;
+    }
+
     .content h2 {
-      margin-top: 0;
+      margin-top: 60px;
       font-weight: 600;
       margin-bottom: 20px;
     }
 
-    /* Profile Page Styles */
     .avatar {
       width: 90px;
       height: 90px;
@@ -95,7 +107,6 @@
       background-color: #16659a;
     }
 
-    /* Connected Accounts */
     .connected-accounts {
       margin-top: 30px;
     }
@@ -119,7 +130,6 @@
       background-color: #3a3a3a;
     }
 
-    /* Logout */
     .logout {
       margin-top: 30px;
     }
@@ -135,15 +145,11 @@
       background-color: #a93226;
     }
 
-    /* Account Settings */
     .account-section .settings-box {
       border: 1px solid #444;
       padding: 20px;
       border-radius: 5px;
       margin-bottom: 20px;
-    }
-    .request-box {
-      /* Standard gray border: 1px solid #444 */
     }
     .delete-box {
       border-color: #b30000;
@@ -172,11 +178,9 @@
       color: #cccccc;
     }
 
-    /* Hide sections by default */
     #profile, #account {
       display: none; 
     }
-    /* Show the profile section by default (or whichever you prefer) */
     #profile.active {
       display: block;
     }
@@ -191,7 +195,6 @@
     <div class="sidebar">
       <a href="#" class="back-to-spaces">&larr; Back to Spaces</a>
       <nav>
-        <!-- Note the inline JavaScript calls to show/hide the correct section -->
         <a onclick="showSection('profile')">Profile</a>
         <a onclick="showSection('account')">Account</a>
       </nav>
@@ -199,6 +202,9 @@
 
     <!-- Main Content -->
     <div class="content">
+      <!-- Back Button -->
+      <button class="back-button" onclick="history.back()">⬅ Back</button>
+
       <!-- PROFILE PAGE -->
       <section id="profile" class="active">
         <h2>Profile</h2>
@@ -242,7 +248,6 @@
       <section id="account">
         <h2>Account Settings</h2>
         <div class="account-section">
-          <!-- Request Data Box -->
           <div class="settings-box request-box">
             <h3>Request Data</h3>
             <p>
@@ -253,7 +258,6 @@
             <button class="btn-request">Request</button>
           </div>
 
-          <!-- Delete Account Box -->
           <div class="settings-box delete-box">
             <h3>Delete Account</h3>
             <p>Permanently delete your account and all associated data.</p>
@@ -264,13 +268,10 @@
     </div>
   </div>
 
-  <!-- Simple JS to toggle active sections -->
   <script>
     function showSection(sectionId) {
-      // Hide both sections
       document.getElementById("profile").classList.remove("active");
       document.getElementById("account").classList.remove("active");
-      // Show the requested section
       document.getElementById(sectionId).classList.add("active");
     }
   </script>
