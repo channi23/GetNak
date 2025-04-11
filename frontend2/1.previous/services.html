@@ -437,7 +437,7 @@
     <div class="services-container">
         <div class="header">
             <h1>Services List</h1>
-            <a href="../upload/upload.html" class="create-service-btn">
+            <a href="upload.html" class="create-service-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1283,5 +1283,50 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners to all take order buttons
+            document.querySelectorAll('.take-order-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const orderId = button.getAttribute('data-order-id');
+        
+                    // Check if already taken
+                    if (button.classList.contains('taken')) return;
+        
+                    // Provide feedback to user
+                    button.disabled = true;
+                    button.textContent = "Taking...";
+        
+                    try {
+                        const response = await fetch('/api/take-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('token') || ''}` // optional JWT
+                            },
+                            body: JSON.stringify({ orderId })
+                        });
+        
+                        const result = await response.json();
+        
+                        if (response.ok) {
+                            button.classList.add('taken');
+                            button.textContent = 'Order Taken';
+                            button.disabled = true;
+                        } else {
+                            button.textContent = 'Try Again';
+                            button.disabled = false;
+                            alert(result.message || "Failed to take order.");
+                        }
+                    } catch (err) {
+                        console.error('Error:', err);
+                        button.textContent = 'Error';
+                        button.disabled = false;
+                    }
+                });
+            });
+        });
+        </script>
+        
 </body>
 </html>

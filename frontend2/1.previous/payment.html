@@ -424,91 +424,106 @@
 
             // RazorPay integration
             const payButton = document.getElementById('pay-button');
-            
-            payButton.addEventListener('click', function() {
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const phone = document.getElementById('phone').value;
-                
-                if (!name || !email || !phone) {
-                    alert('Please fill all fields');
-                    return;
-                }
-                
-                // Validate email format
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    alert('Please enter a valid email address');
-                    return;
-                }
-                
-                // Validate phone number (assuming Indian format)
-                const phoneRegex = /^[6-9]\d{9}$/;
-                if (!phoneRegex.test(phone)) {
-                    alert('Please enter a valid 10-digit phone number');
-                    return;
-                }
-                
-                // Animate button on click
-                gsap.to(payButton, {
-                    scale: 0.95,
-                    duration: 0.1,
-                    onComplete: () => {
-                        gsap.to(payButton, {
-                            scale: 1,
-                            duration: 0.1
-                        });
-                        
-                        // Show loading overlay
-                        showLoading();
-                        
-                        // Simulate payment processing (would be replaced with actual RazorPay integration)
-                        setTimeout(() => {
-                            // RazorPay options configuration
-                            const options = {
-                                key: "rzp_test_XXXXXXXXXXXXXXX", // Replace with actual RazorPay key
-                                amount: parseFloat(filePrice) * 100, // Amount in paisa
-                                currency: "INR",
-                                name: "Learning Platform",
-                                description: `Payment for ${assignmentTitle}`,
-                                image: "../assets/logo.png", // Replace with your logo path
-                                handler: function(response) {
-                                    // Handle successful payment
-                                    hideLoading();
-                                    showSuccess();
-                                    
-                                    // Store payment info in localStorage
-                                    localStorage.setItem('paymentId', response.razorpay_payment_id);
-                                    localStorage.setItem('paymentStatus', 'completed');
-                                    
-                                    // In a real implementation, you would make an API call to your backend
-                                    // to verify the payment and update your database
-                                },
-                                prefill: {
-                                    name: name,
-                                    email: email,
-                                    contact: phone
-                                },
-                                theme: {
-                                    color: "#000000"
-                                },
-                                modal: {
-                                    ondismiss: function() {
+
+        payButton.addEventListener('click', function () {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!name || !email || !phone) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            const phoneRegex = /^[6-9]\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+
+            gsap.to(payButton, {
+                scale: 0.95,
+                duration: 0.1,
+                onComplete: () => {
+                    gsap.to(payButton, {
+                        scale: 1,
+                        duration: 0.1
+                    });
+
+                    showLoading();
+
+                    setTimeout(() => {
+                        const options = {
+                            key: "rzp_test_XXXXXXXXXXXXXXX", // Replace with your actual Razorpay key
+                            amount: parseFloat(filePrice) * 100,
+                            currency: "INR",
+                            name: "Learning Platform",
+                            description: `Payment for ${assignmentTitle}`,
+                            image: "../assets/logo.png",
+                            handler: function (response) {
+                                // ✅ Call backend to verify and save transaction
+                                fetch('/api/payment/verify', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        paymentId: response.razorpay_payment_id,
+                                        amount: parseFloat(filePrice),
+                                        name,
+                                        email,
+                                        phone,
+                                        fileName,
+                                        fileType,
+                                        assignmentTitle
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        localStorage.setItem('paymentId', response.razorpay_payment_id);
+                                        localStorage.setItem('paymentStatus', 'completed');
+                                        hideLoading();
+                                        showSuccess();
+                                    } else {
+                                        alert("Payment verification failed. Please contact support.");
                                         hideLoading();
                                     }
+                                })
+                                .catch(err => {
+                                    console.error("Backend error:", err);
+                                    alert("An error occurred while processing the payment.");
+                                    hideLoading();
+                                });
+                            },
+                            prefill: {
+                                name: name,
+                                email: email,
+                                contact: phone
+                            },
+                            theme: {
+                                color: "#000000"
+                            },
+                            modal: {
+                                ondismiss: function () {
+                                    hideLoading();
                                 }
-                            };
-                            
-                            // For demo purposes, simulate success without RazorPay
-                            // In production, you would use: const razorpayInstance = new Razorpay(options);
-                            // And then call: razorpayInstance.open();
-                            
-                            hideLoading();
-                            showSuccess();
-                        }, 2000);
-                    }
-                });
+                            }
+                        };
+
+                        // ✅ Create Razorpay instance
+                        const razorpayInstance = new Razorpay(options);
+                        razorpayInstance.open();
+                    }, 2000);
+                }
             });
+        });
             
             // Continue button in success message
             document.getElementById('continue-button').addEventListener('click', function() {

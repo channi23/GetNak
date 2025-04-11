@@ -70,21 +70,42 @@
 
   <!-- JS Logic -->
   <script>
-    // 1) Google Sign-In callback
-    function handleGoogleLogin(response) {
+    // 1) Google Sign-In callback with backend verification
+    async function handleGoogleLogin(response) {
       try {
         const token = response.credential;
         const userInfo = jwt_decode(token);
 
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: userInfo.email,
+            name: userInfo.name,
+            picture: userInfo.picture
+          })
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          alert(data.message || "Login failed.");
+          return;
+        }
+
+        const data = await res.json();
+
         localStorage.setItem("user", JSON.stringify({
-          name: userInfo.name,
-          email: userInfo.email,
-          picture: userInfo.picture
+          name: data.name || userInfo.name,
+          email: data.email || userInfo.email,
+          picture: data.picture || userInfo.picture
         }));
 
-        window.location.href = "home.html";
+        window.location.href = "homelogin.html";
+
       } catch (err) {
-        console.error("Error decoding Google token:", err);
+        console.error("Error decoding or verifying Google token:", err);
         alert("Google login failed. Please try again.");
       }
     }
@@ -101,7 +122,7 @@
         email: email
       }));
 
-      window.location.href = "home.html";
+      window.location.href = "homelogin.html";
     });
   </script>
 </body>

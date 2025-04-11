@@ -435,6 +435,8 @@
     </style>
 </head>
 
+
+
 <body>
     <header class="navbar">
         <div class="hamburger-container" onclick="toggleSidebar()">
@@ -619,7 +621,7 @@
             localStorage.setItem('assignmentDescription', descriptionInput.value);
             
             // Redirect to payment page
-            window.location.href = 'Pay/payment.html';
+            window.location.href = 'payment.html';
         }
         
         // Add drag and drop functionality
@@ -698,5 +700,32 @@
             });
         });
     </script>
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append("file", document.getElementById("file").files[0]);
+            formData.append("subject", document.getElementById("subject").value);
+            formData.append("description", document.getElementById("description").value);
+        
+            try {
+                const res = await fetch('/api/upload-service', {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    },
+                    body: formData
+                });
+        
+                const result = await res.json();
+                alert(result.message || "Upload successful!");
+            } catch (err) {
+                alert("Upload failed!");
+                console.error(err);
+            }
+        });
+        </script>
+        
 </body>
 </html>
