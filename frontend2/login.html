@@ -59,6 +59,12 @@
       <button type="submit" class="primary-btn">Sign in</button>
     </form>
 
+    <form class="auth-form" id="signup-form">
+      <input type="email" id="signup-email" placeholder="Your email" required />
+      <input type="password" id="signup-password" placeholder="••••••••" required />
+      <button type="submit" class="primary-btn">Sign Up</button>
+    </form>
+
     <!-- Single Sign-On (SSO) Option -->
     <p class="or-divider">or</p>
     <button class="secondary-btn">
@@ -93,6 +99,44 @@
       e.preventDefault();
       // Insert your actual login logic
       alert('Logged in via email/password!');
+    });
+
+    // Handle the signup form
+    document.getElementById('signup-form').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent the default form submission behavior
+
+      // Get the form data
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+
+      // Prepare the data to send in the POST request
+      const data = {
+        email: email,
+        password: password
+      };
+
+      // Send the POST request using fetch
+      fetch('http://localhost:5001/api/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Signup successful!');
+          // Optionally redirect to the login page or dashboard
+          window.location.href = 'login.html';
+        } else {
+          alert('Signup failed: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while signing up.');
+      });
     });
   </script>
 </body>
