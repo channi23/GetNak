@@ -32,6 +32,12 @@
     <!-- SIGNUP FORM -->
     <form class="auth-form" id="signup-form">
       <input
+        type="name"
+        id="signup-name"
+        placeholder="Name"
+        required
+      />
+      <input
         type="email"
         id="signup-email"
         placeholder="Email"
@@ -43,12 +49,11 @@
         placeholder="Password"
         required
       />
-      <input
-        type="password"
-        id="signup-confirm-password"
-        placeholder="Confirm Password"
-        required
-      />
+      <select id="signup-user-type" class="auth-input" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="service provider">Provider</option>
+        <option value="customer">Customer</option>
+      </select>
       <!-- Optional Turnstile or reCAPTCHA can go here -->
 
       <button type="submit" class="primary-btn">Sign Up</button>
@@ -88,7 +93,7 @@
       }
     
       try {
-        const res = await fetch('/api/signup', {
+        const res = await fetch('http://localhost:5001/api/users/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -99,7 +104,7 @@
         if (res.ok) {
           localStorage.setItem('token', data.token); // Save JWT
           alert("Signup successful!");
-          window.location.href = "dashboard.html";
+          window.location.href = "homelogin.html";
         } else {
           alert(data.message || "Signup failed.");
         }
@@ -108,7 +113,7 @@
         alert("Network error.");
       }
     });
-    </script>
+  </script>
     
 </body>
 </html>

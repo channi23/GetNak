@@ -193,7 +193,7 @@
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <a href="#" class="back-to-spaces">&larr; Back to Spaces</a>
+
       <nav>
         <a onclick="showSection('profile')">Profile</a>
         <a onclick="showSection('account')">Account</a>
@@ -208,7 +208,11 @@
       <!-- PROFILE PAGE -->
       <section id="profile" class="active">
         <h2>Profile</h2>
-        <div class="avatar">d</div>
+        <div class="avatar-container">
+          <img id="profile-pic" src="" alt="Profile picture" class="avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid #444; cursor: pointer; transition: border-color 0.2s;">
+          <input type="file" id="upload-pfp" accept="image/*" style="display: none;">
+          <label for="upload-pfp" class="upload-label">Change Photo</label>
+        </div>
         <form class="profile-form">
           <div class="form-group">
             <label for="fullName">Full name</label>
@@ -235,8 +239,8 @@
 
         <div class="connected-accounts">
           <h4>Connected accounts</h4>
-          <a href="#" class="btn-connect">Notion &rarr; Connect</a>
-          <a href="#" class="btn-connect">Github &rarr; Connect</a>
+          <a href="#" class="btn-connect">Notion → Connect</a>
+          <a href="#" class="btn-connect">Github → Connect</a>
         </div>
 
         <div class="logout">
@@ -274,6 +278,49 @@
       document.getElementById("account").classList.remove("active");
       document.getElementById(sectionId).classList.add("active");
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const profilePic = document.getElementById('profile-pic');
+      const uploadInput = document.getElementById('upload-pfp');
+
+      // Set default avatar if none selected
+      if (!profilePic.src) {
+        profilePic.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNjY2NjY2MiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjAgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==';
+      }
+
+      uploadInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          if (!file.type.match('image.*')) {
+            alert('Please select an image file (JPEG, PNG, etc.)');
+            return;
+          }
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            profilePic.src = e.target.result;
+          };
+          reader.onerror = function() {
+            alert('Error reading file. Please try another image.');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Clicking on the image opens file dialog
+      profilePic.addEventListener('click', function() {
+        uploadInput.click();
+      });
+
+      // Hover effects
+      profilePic.addEventListener('mouseover', function() {
+        this.style.borderColor = '#1f7cbe';
+      });
+
+      profilePic.addEventListener('mouseout', function() {
+        this.style.borderColor = '#444';
+      });
+    });
   </script>
 </body>
 </html>
