@@ -47,6 +47,66 @@
 <body>
   <header>
     <div class="left-section">
+
+      <div class="logo">GetNak</div>
+    </div>
+
+    <nav>
+      <ul>
+        <li class="dropdown">
+          <a href="#">Find Work</a>
+          <!-- Dropdown for Find Work -->
+          <div class="dropdown-content">
+            <div class="dropdown-tiles">
+              <div class="tile">
+                <a href="../services/services.html">
+                  <h4>Service</h4>
+                  <p>work for others</p>
+                </a>
+              </div>
+              <div class="tile">
+                <a href="../upload/upload.html">
+                  <h4>Upload Files</h4>
+                  <p>upload your work</p>
+                </a>
+              </div>
+              <div class="tile">
+                <a href="../poll/poll.html">
+                  <h4>Community</h4>
+                  <p>join our community</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="why-us.html">Why Us</a>
+          <!-- Dropdown for Why Us -->
+          <div class="dropdown-content">
+            <div class="dropdown-tiles">
+              <div class="tile">
+                <a href="../aboutus.html">
+                  <h4>About Us</h4>
+                  <p>Learn about our mission and vision.</p>
+                </a>
+              </div>
+              <div class="tile">
+                <a href="../contactus.html">
+                  <h4>Contactus</h4>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="profile-container">
+      <img src="../sharma.png" alt="Profile" class="profile-pic" onclick="toggleDropdown()" />
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html">Profile</a>
+        <a href="../dashboard/dashboard.html">Dashboard</a>
+
       <div class="logo">MyFreelanceSite</div>
     </div>
 
@@ -77,6 +137,7 @@
       <div class="profile-dropdown" id="profileDropdown">
         <a href="profile.html">Profile</a>
         <a href="dashboard.html">Dashboard</a>
+
         <a href="home.html">Logout</a>
       </div>
     </div>
@@ -84,12 +145,21 @@
 
   <main>
     <section class="hero">
+
+      <h1 id="typed-text1">Find the perfect freelance services for you</h1>
+      <p id="typed-text2">Connect with talented professionals and get your projects done quickly and efficiently.</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Ask AI anything..." />
+        <div class="gear-icon">&#9881;</div>
+      </div>
+
         <h1 id="typed-text1"></h1>
         <p id="typed-text2"></p>
         <div class="search-bar">
           <input type="text" placeholder="Ask AI anything..." />
           <div class="gear-icon">&#9881;</div>
         </div>
+
     </section>
   </main>
 
@@ -114,4 +184,8 @@
   <script src="typing.js"></script>
   
 </body>
+
 </html>
+
+</html>
+
