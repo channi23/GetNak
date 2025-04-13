@@ -9,17 +9,26 @@
 <body>
   <!-- Header -->
   <header>
+
     <!-- Left Section -->
     <div class="left-section">
       <!-- Logo -->
       <div class="logo">GetNak</div>
     </div>
     
+
+    <!-- Left Section (If needed; the snippet was missing a visible left-section div) -->
+    <div class="left-section">
+      <!-- Logo -->
+      <div class="logo">GetNak</div>
+    </div>
+
     <!-- Nav Menu (right side) -->
     <nav>
       <ul>
         <li class="dropdown">
-          <a href="#">Find Work</a>
+          <a href="../services/service.html">Find Work</a>
+
           <!-- Dropdown for Find Work -->
           <div class="dropdown-content">
             <div class="dropdown-tiles">
@@ -62,10 +71,22 @@
                   <h4>Support</h4>
                   <p>contact for help</p>
                 </a>
+
+          <!-- Same tiles appear on hover -->
+          <div class="dropdown-content">
+            <div class="dropdown-tiles">
+              <div class="tile">
+                <a href="services.html" style="color:inherit; text-decoration:none;">
+                  <h4>Orders</h4>
+                  <p>Pick the work you feel right.</p>
+                </a>
+              </div>
+
               </div>
             </div>
           </div>
         </li>
+
       </ul>
     </nav>
     
@@ -73,19 +94,39 @@
     <div class="header-buttons">
       <a href="loginSignup/login.html" class="btn-login">
         <!-- SVG icon -->
+
+        <li><a href="why-us.html">Why Us</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header Buttons -->
+    <div class="header-buttons">
+      <!-- Update href to your login/signup routes -->
+      <a href="login.html" class="btn-login">
+        <!-- Optional SVG icon -->
+
         <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18">
           <path d="M12 12c2.131 0 3.864-1.733 3.864-3.864S14.131 4.272 12 4.272 8.136 6.005 8.136 8.136 9.869 12 12 12zm0 2.727c-2.545 0-7.636 1.273-7.636 3.818v1.091h15.272v-1.091c0-2.545-5.09-3.818-7.636-3.818z"/>
         </svg>
         <span>Log in</span>
       </a>
+
       <a href="loginSignup/signup.html" class="btn-signup">Sign up</a>
     </div>
   </header>
   
+
+      <a href="signup.html" class="btn-signup">Sign up</a>
+    </div>
+  </header>
+
+
   <!-- Main Content -->
   <main>
     <!-- Hero Section -->
     <section class="hero">
+
       <h1 id="typed-text1">Find the perfect freelance services for you</h1>
       <p id="typed-text2">Connect with talented professionals and get your projects done quickly and efficiently.</p>
       <div class="search-bar">
@@ -104,3 +145,23 @@
   <script src="typing.js"></script>
 </body>
 </html>
+
+      <h1 id="typed-text1"></h1>
+      <p id="typed-text2"></p>
+      <div class="search-bar">
+        <input type="text" placeholder="Ask AI anything..." />
+        <div class="gear-icon">&#9881;</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (stays at bottom) -->
+  <footer>
+    &copy; 2025 MyFreelanceSite. All rights reserved.
+  </footer>
+
+  <!-- Link to the external JS file (typing effect) -->
+  <script src="typing.js"></script>
+</body>
+</html>
+
