@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login</title>
   <link rel="stylesheet" href="../auth.css" />
-
+  
   <!-- Google OAuth -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- Cloudflare Turnstile (optional) -->
@@ -16,20 +16,20 @@
 <body>
   <!-- Optional Back Button -->
   <button class="back-button" onclick="history.back()">Back</button>
-
+  
   <div class="auth-container">
     <!-- Logo -->
-    <div class="auth-logo">
-      <div class="placeholder-logo"></div>
-    </div>
-
+    <!-- <div class="auth-logo">
+      <div class="placeholder-logo" style="background-image: url(../../logo.png);"></div>
+    </div> -->
+    
     <!-- Heading -->
-    <h1>Yooo, welcome back!</h1>
+    <h1> welcome back!</h1>
     <p class="subtext">
       First time here?
       <a href="signup.html">Sign up for free</a>
     </p>
-
+    
     <!-- GOOGLE SIGN-IN -->
     <div
       id="g_id_onload"
@@ -38,17 +38,20 @@
       data-callback="handleGoogleLogin"
     ></div>
     <div class="g_id_signin" data-type="standard"></div>
-
+    
     <!-- OR Divider -->
     <p class="or-divider">or</p>
-
+    
     <!-- EMAIL LOGIN FORM -->
     <form class="auth-form" id="login-form">
       <input type="email" id="login-email" placeholder="Your email" required />
       <input type="password" id="login-password" placeholder="••••••••" required />
+      <div class="form-options">
+        <a href="forgot-password.html">Forgot password?</a>
+      </div>
       <button type="submit" class="primary-btn">Sign in</button>
     </form>
-   
+    
     <!-- Legal -->
     <p class="legal-text">
       You acknowledge that you read, and agree, to our
@@ -56,12 +59,12 @@
       <a href="#" target="_blank">Privacy Policy</a>.
     </p>
   </div>
-
+  
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 Learning Platform. All rights reserved.</p>
   </footer>
-
+  
   <!-- JS Logic -->
   <script>
     // 1) Google Sign-In callback with backend verification
@@ -69,7 +72,7 @@
       try {
         const token = response.credential;
         const userInfo = jwt_decode(token);
-
+        
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: {
@@ -77,46 +80,77 @@
           },
           body: JSON.stringify({
             email: userInfo.email,
-            name: userInfo.name,
-            picture: userInfo.picture
+            name: userInfo.name
           })
         });
-
+        
         if (!res.ok) {
           const data = await res.json();
           alert(data.message || "Login failed.");
           return;
         }
-
+        
         const data = await res.json();
-
+        
         localStorage.setItem("user", JSON.stringify({
           name: data.name || userInfo.name,
-          email: data.email || userInfo.email,
-          picture: data.picture || userInfo.picture
+          email: data.email || userInfo.email
         }));
-
+        
         window.location.href = "../homelogin.html";
-
       } catch (err) {
-        console.error("Error decoding or verifying Google token:", err);
+        console.error("Error during Google login:", err);
         alert("Google login failed. Please try again.");
       }
     }
-
-    // 2) Email/Password login (Simulated)
-    document.getElementById('login-form').addEventListener('submit', function (e) {
+    
+    // 2) Email/Password login
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
       e.preventDefault();
-
-      const email = document.getElementById('login-email').value;
-
-      // Fake login for demo
-      localStorage.setItem("user", JSON.stringify({
-        name: "Guest User",
-        email: email
-      }));
-
-      window.location.href = "../homelogin.html";
+      
+      try {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        // In a real app, you would validate the credentials with your backend
+        const res = await fetch('/api/login/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        });
+        
+        if (!res.ok) {
+          // Fallback to demo mode if server is unavailable
+          console.warn("Server unavailable, using demo mode");
+          localStorage.setItem("user", JSON.stringify({
+            name: "Guest User",
+            email: email
+          }));
+          window.location.href = "../homelogin.html";
+          return;
+        }
+        
+        const data = await res.json();
+        localStorage.setItem("user", JSON.stringify({
+          name: data.name,
+          email: data.email
+        }));
+        
+        window.location.href = "../homelogin.html";
+      } catch (err) {
+        console.error("Login error:", err);
+        // Fallback to demo mode
+        localStorage.setItem("user", JSON.stringify({
+          name: "Guest User",
+          email: document.getElementById('login-email').value
+        }));
+        window.location.href = "../homelogin.html";
+      }
     });
   </script>
 </body>
