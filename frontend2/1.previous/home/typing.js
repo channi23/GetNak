@@ -2,11 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     // Text lines to type out
-
     const text1 = "";
-
-    const text1 = "We connect people to bring projects to life";
-
     const text2 = "Find high-quality talent or open jobs with the help of AI tools that keep you in control.";
   
     // Grab the elements

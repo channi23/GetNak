@@ -17,7 +17,6 @@ const serviceRoutes = require('./routes/services');
 const orderRoutes = require('./routes/orders');
 const reviewRoutes = require('./routes/reviews');
 const notificationRoutes = require('./routes/notifications');
-const paymentRoutes = require("./routes/payment");
 
 
 app.use('/api/users', userRoutes);
@@ -25,7 +24,6 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use("/api/payments", paymentRoutes);
 
 
 // ✅ Database connection
