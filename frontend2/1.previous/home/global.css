@@ -16,16 +16,17 @@ body {
 
 /* Body with "smoke" radial gradient from top-left */
 body {
-  display: flex;            /* Use flex layout for the page */
-  flex-direction: column;   /* Header -> Main -> Footer in a column */
+  display: flex;
+  flex-direction: column;
   background-color: #121212; 
   background: radial-gradient(
     circle at top left,
     rgba(255,255,255,0.06),
     #121212 50%
   );
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   color: #ffffff;
+  line-height: 1.5;
 }
 
 /* Header Container */
@@ -34,7 +35,9 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: #1f1f1f; /* Navigation bar background */
+  background-color: rgba(31, 31, 31, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Logo */
@@ -42,6 +45,7 @@ header {
   font-size: 1.5rem;
   font-weight: bold;
   color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
 /* Nav Menu */
@@ -53,7 +57,7 @@ nav ul {
 
 /* Each <li> that has a dropdown */
 nav ul li.dropdown {
-  position: relative; /* So .dropdown-content can be absolutely positioned */
+  position: relative;
 }
 
 /* Standard link style */
@@ -63,6 +67,7 @@ nav ul li a {
   font-weight: 500;
   padding: 0.3rem 0.5rem;
   display: block;
+  transition: color 0.2s ease;
 }
 
 nav ul li a:hover {
@@ -73,14 +78,27 @@ nav ul li a:hover {
 .dropdown-content {
   display: none;
   position: absolute;
-  top: 100%;  /* directly below the parent <li> */
+  top: 100%;
   left: 0;
   background-color: #2f2f2f;
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   min-width: 250px;
   z-index: 999;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.2s ease-out;
+  transform-origin: top center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Show dropdown on hover of <li.dropdown> */
@@ -91,20 +109,23 @@ nav ul li a:hover {
 /* Tiles inside the dropdown */
 .dropdown-tiles {
   display: grid;
-  grid-template-columns: 1fr; /* single column; or more if you prefer */
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
 }
 
 .tile {
   background-color: #232323;
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .tile:hover {
   background-color: #3b3b3b;
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .tile h4 {
@@ -114,7 +135,7 @@ nav ul li a:hover {
 }
 
 .tile p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #cccccc;
   line-height: 1.3;
 }
@@ -139,7 +160,7 @@ nav ul li a:hover {
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 20px;
 }
 
 .btn-login {
@@ -147,30 +168,30 @@ nav ul li a:hover {
   color: #ffffff;
   border: 1px solid #3d3d3d;
   padding: 0.4rem 1rem;
-  border-radius: 20px;
   gap: 0.4rem;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-signup {
   background-color: #ffffff;
   color: #000000;
   padding: 0.4rem 1rem;
-  border-radius: 20px;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-login:hover {
   background-color: #2f2f2f;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-signup:hover {
   transform: scale(1.05);
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.15);
 }
 
 /* Main container: flex: 1 so the footer stays at bottom */
 main {
-  flex: 1; /* This pushes the footer down if content is short */
+  flex: 1;
   display: flex;
   flex-direction: column; 
 }
@@ -179,24 +200,29 @@ main {
 .hero {
   background-color: transparent;
   text-align: center;
-  padding: 3rem 1rem 4rem;
+  padding: 5rem 1rem 6rem;
   flex: 1; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* vertically center if content is small */
+  justify-content: center;
 }
 
 .hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 2.8rem;
+  margin-bottom: 1.2rem;
   font-weight: 700;
-  max-width: 700px;
+  max-width: 800px;
+  background: linear-gradient(90deg, #ffffff, #d9d9d9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
 }
 
 .hero p {
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
   max-width: 700px;
   line-height: 1.4;
   color: #cccccc;
@@ -206,23 +232,22 @@ main {
 .search-bar {
   display: inline-flex;
   align-items: center;
-  background-color: #fafafa;
+  background-color: rgba(250, 250, 250, 0.95);
   border-radius: 40px;
   padding: 0.5rem 1rem;
-  max-width: 550px;
+  max-width: 600px;
   width: 100%;
   justify-content: space-between;
-  /* For subtle transition if you have a hover effect */
-  transition: box-shadow 0.4s ease, transform 0.2s ease;
+  transition: all 0.4s ease;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
 }
 
-.search-bar:hover {
-  /* Example glow effect if you'd like */
+.search-bar:hover, .search-bar:focus-within {
   box-shadow:
-    0 0 5px #e3c0e3,
-    0 0 10px #e2bbe2,
-    0 0 20px #ecc4ec;
-  transform: scale(1.01);
+    0 0 5px rgba(227, 192, 227, 0.3),
+    0 0 15px rgba(226, 187, 226, 0.2),
+    0 0 25px rgba(236, 196, 236, 0.1);
+  transform: scale(1.02);
 }
 
 .search-bar input {
@@ -232,35 +257,135 @@ main {
   font-size: 1rem;
   color: #333333;
   background-color: transparent;
-  padding: 0.5rem;
+  padding: 0.6rem 0.5rem;
 }
 
 .search-bar .gear-icon {
-  width: 35px;
-  height: 35px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color: #ffcc00; /* accent color */
+  background-color: #ffcc00;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #000000; /* gear icon content in black for contrast */
-  transition: transform 0.4s ease;
+  color: #000000;
+  transition: transform 0.4s ease, background-color 0.3s ease;
+  font-size: 1.2rem;
 }
 
 .search-bar .gear-icon:hover {
   transform: rotate(90deg);
+  background-color: #ffd633;
+}
+
+/* Profile Container Styles */
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  object-fit: cover;
+  background-color: #3d3d3d;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.profile-pic:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background-color: #2f2f2f;
+  border-radius: 8px;
+  min-width: 200px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.profile-info {
+  padding: 1rem;
+  border-bottom: 1px solid #3d3d3d;
+  text-align: center;
+}
+
+.profile-info .user-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+.profile-info .user-email {
+  font-size: 0.85rem;
+  color: #cccccc;
+  word-break: break-all;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 0.75rem 1.2rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+  background-color: #3b3b3b;
+}
+
+.profile-dropdown a.logout {
+  color: #ff7777;
 }
 
 /* Footer at the bottom */
 footer {
   text-align: center;
-  padding: 1rem;
-  background-color: #1f1f1f;
+  padding: 1.2rem;
+  background-color: rgba(31, 31, 31, 0.95);
   color: #999999;
   font-size: 0.9rem;
+  box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.2);
 }
-=======
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  nav ul {
+    gap: 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .search-bar {
+    max-width: 90%;
+  }
+}
+
+}
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -559,4 +684,5 @@ nav ul {
   
   /* ... (rest of your styles remain the same: hero, footer, typed text, etc.) ... */
   
+
 
