@@ -4,52 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up</title>
-  <!-- Link the shared CSS file -->
+  <!-- Link the same shared CSS file -->
   <link rel="stylesheet" href="../auth.css" />
-  <!-- Google OAuth -->
+  <!-- Google OAuth (if needed) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <!-- Cloudflare Turnstile -->
+  <!-- Cloudflare Turnstile (if needed) -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <!-- jwt-decode CDN for Google sign-in -->
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 </head>
 <body>
-  <!-- Back Button -->
+  <!-- Optional Back Button -->
   <button class="back-button" onclick="history.back()">Back</button>
-  
+
   <div class="auth-container">
-    <!-- Logo -->
-    <!-- <div class="auth-logo">
+    <!-- Logo (optional) -->
+    <div class="auth-logo">
       <div class="placeholder-logo"></div>
-    </div> -->
-    
+    </div>
+
     <!-- Heading -->
     <h1>Create Your Account</h1>
     <p class="subtext">
       Already have an account?
-      <a href="login.html">Sign in</a>
+      <!-- Link back to login page -->
+      <a href="login.html">Login</a>
     </p>
-    
-    <!-- GOOGLE SIGN-UP -->
-    <div
-      id="g_id_onload"
-      data-client_id="YOUR_GOOGLE_CLIENT_ID"
-      data-auto_prompt="false"
-      data-callback="handleGoogleSignup"
-    ></div>
-    <div class="g_id_signin" data-type="standard"></div>
-    
-    <!-- OR Divider -->
-    <p class="or-divider">or</p>
-    
+
     <!-- SIGNUP FORM -->
     <form class="auth-form" id="signup-form">
-      <input
-        type="text"
-        id="signup-name"
-        placeholder="Full name"
-        required
-      />
       <input
         type="email"
         id="signup-email"
@@ -59,30 +40,20 @@
       <input
         type="password"
         id="signup-password"
-        placeholder="Password (min. 8 characters)"
-        minlength="8"
+        placeholder="Password"
         required
       />
       <input
         type="password"
         id="signup-confirm-password"
-        placeholder="Confirm password"
-        minlength="8"
+        placeholder="Confirm Password"
         required
       />
-      
-      <!-- Password strength indicator -->
-      <div class="password-strength">
-        <div class="strength-meter" id="strength-meter"></div>
-        <span id="strength-text">Password strength</span>
-      </div>
-      
-      <!-- Cloudflare Turnstile -->
-      <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
-      
-      <button type="submit" class="primary-btn" id="signup-button">Create account</button>
+      <!-- Optional Turnstile or reCAPTCHA can go here -->
+
+      <button type="submit" class="primary-btn">Sign Up</button>
     </form>
-    
+
     <!-- Legal Text -->
     <p class="legal-text">
       By signing up, you confirm that you agree to our
@@ -90,140 +61,54 @@
       <a href="#" target="_blank">Privacy Policy</a>.
     </p>
   </div>
-  
-  <!-- Footer -->
+
+  <!-- Footer (optional) -->
   <footer>
     <p>&copy; 2025 Learning Platform. All rights reserved.</p>
   </footer>
-  
   <script>
-    // Password strength checker
-    document.getElementById('signup-password').addEventListener('input', function(e) {
-      const password = e.target.value;
-      const meter = document.getElementById('strength-meter');
-      const text = document.getElementById('strength-text');
-      
-      // Calculate strength
-      const hasLetters = /[a-zA-Z]/.test(password);
-      const hasNumbers = /\d/.test(password);
-      const hasSpecial = /[^a-zA-Z0-9]/.test(password);
-      const isLongEnough = password.length >= 8;
-      
-      let strength = 0;
-      if (hasLetters) strength += 1;
-      if (hasNumbers) strength += 1;
-      if (hasSpecial) strength += 1;
-      if (isLongEnough) strength += 1;
-      
-      // Update UI
-      meter.className = 'strength-meter';
-      if (strength === 0) {
-        meter.classList.add('empty');
-        text.textContent = 'Password strength';
-      } else if (strength <= 2) {
-        meter.classList.add('weak');
-        text.textContent = 'Weak password';
-      } else if (strength === 3) {
-        meter.classList.add('medium');
-        text.textContent = 'Medium strength';
-      } else {
-        meter.classList.add('strong');
-        text.textContent = 'Strong password';
-      }
+    // Optional: handle your signup logic here
+    document.getElementById('signup-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      // Insert actual signup logic
+      alert('You have signed up!');
     });
-    
-    // Google Sign-up handler
-    async function handleGoogleSignup(response) {
-      try {
-        const token = response.credential;
-        const userInfo = jwt_decode(token);
-        
-        const res = await fetch('/api/signup/google', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: userInfo.email,
-            name: userInfo.name,
-            googleId: userInfo.sub
-          })
-        });
-        
-        const data = await res.json();
-        
-        if (!res.ok) {
-          if (res.status === 409) {
-            // User already exists
-            alert("This Google account is already registered. Please sign in instead.");
-            window.location.href = "login.html";
-            return;
-          }
-          alert(data.message || "Signup failed. Please try again.");
-          return;
-        }
-        
-        // Save auth token and redirect
-        localStorage.setItem('token', data.token);
-        window.location.href = "../dashboard.html";
-        
-      } catch (err) {
-        console.error("Error during Google signup:", err);
-        alert("Google signup failed. Please try again or use email signup.");
-      }
-    }
-    
-    // Email Signup handler
+  </script>
+  <script>
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       
-      const signupButton = document.getElementById('signup-button');
-      signupButton.disabled = true;
-      signupButton.textContent = 'Creating account...';
-      
-      const name = document.getElementById("signup-name").value;
       const email = document.getElementById("signup-email").value;
       const password = document.getElementById("signup-password").value;
       const confirm = document.getElementById("signup-confirm-password").value;
-      
-      // Basic validation
+    
       if (password !== confirm) {
         alert("Passwords do not match.");
-        signupButton.disabled = false;
-        signupButton.textContent = 'Create account';
         return;
       }
-      
+    
       try {
         const res = await fetch('/api/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password })
+          body: JSON.stringify({ email, password })
         });
-        
+    
         const data = await res.json();
-        
+    
         if (res.ok) {
           localStorage.setItem('token', data.token); // Save JWT
-          alert("Account created successfully!");
-          window.location.href = "../dashboard.html";
+          alert("Signup successful!");
+          window.location.href = "dashboard.html";
         } else {
-          // Handle specific error cases
-          if (res.status === 409) {
-            alert("This email is already registered. Please sign in instead.");
-          } else {
-            alert(data.message || "Signup failed. Please try again.");
-          }
-          signupButton.disabled = false;
-          signupButton.textContent = 'Create account';
+          alert(data.message || "Signup failed.");
         }
       } catch (err) {
-        console.error("Signup error:", err);
-        alert("Network error. Please check your connection and try again.");
-        signupButton.disabled = false;
-        signupButton.textContent = 'Create account';
+        console.error(err);
+        alert("Network error.");
       }
     });
-  </script>
+    </script>
+    
 </body>
 </html>
