@@ -8,7 +8,7 @@
       margin: 0;
       background-color: #121212;
       color: #ffffff;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .container {
       display: flex;
@@ -19,21 +19,33 @@
       width: 220px;
       background-color: #1a1a1a;
       padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     }
     .sidebar a {
       display: block;
       color: #ffffff;
       text-decoration: none;
       margin-bottom: 15px;
+      padding: 8px 12px;
+      border-radius: 4px;
       font-weight: 500;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
     .sidebar a:hover {
-      color: #cccccc;
+      background-color: #2d2d2d;
+    }
+    .sidebar a.active {
+      background-color: #2d2d2d;
+      border-left: 3px solid #1f7cbe;
     }
     .back-to-spaces {
       margin-bottom: 30px;
       display: inline-block;
+      transition: all 0.2s ease;
+    }
+    .back-to-spaces:hover {
+      transform: translateX(-3px);
     }
 
     .content {
@@ -52,9 +64,11 @@
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
     .back-button:hover {
       background-color: #3a3a3a;
+      transform: translateX(-3px);
     }
 
     .content h2 {
@@ -73,6 +87,11 @@
       justify-content: center;
       font-size: 40px;
       margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .avatar:hover {
+      background-color: #444444;
     }
     .profile-form {
       max-width: 500px;
@@ -93,6 +112,20 @@
       color: #ffffff;
       border-radius: 4px;
       box-sizing: border-box;
+      transition: border 0.2s ease;
+    }
+    input[type="text"]:focus {
+      border-color: #1f7cbe;
+      outline: none;
+    }
+    .input-error {
+      border-color: #c0392b !important;
+    }
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
     }
     .btn-primary {
       background-color: #1f7cbe;
@@ -102,9 +135,14 @@
       margin-top: 10px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
     .btn-primary:hover {
       background-color: #16659a;
+    }
+    .btn-primary:disabled {
+      background-color: #666;
+      cursor: not-allowed;
     }
 
     .connected-accounts {
@@ -125,6 +163,7 @@
       font-size: 0.9rem;
       margin-bottom: 10px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
     .btn-connect:hover {
       background-color: #3a3a3a;
@@ -140,6 +179,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
     .btn-logout:hover {
       background-color: #a93226;
@@ -150,9 +190,16 @@
       padding: 20px;
       border-radius: 5px;
       margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+    .account-section .settings-box:hover {
+      border-color: #666;
     }
     .delete-box {
-      border-color: #b30000;
+      border-color: #b30000 !important;
+    }
+    .delete-box:hover {
+      border-color: #ff0000 !important;
     }
     .btn-request, .btn-delete {
       border: none;
@@ -160,6 +207,7 @@
       padding: 8px 16px;
       cursor: pointer;
       color: #ffffff;
+      transition: background-color 0.2s ease;
     }
     .btn-request {
       background-color: #333;
@@ -180,12 +228,100 @@
 
     #profile, #account {
       display: none; 
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
-    #profile.active {
+    #profile.active, #account.active {
       display: block;
+      opacity: 1;
     }
-    #account.active {
-      display: block;
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+    }
+    .toast.success {
+      background-color: #2ecc71;
+    }
+    .toast.error {
+      background-color: #e74c3c;
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+    .modal {
+      background-color: #1a1a1a;
+      border-radius: 5px;
+      padding: 20px;
+      width: 400px;
+      max-width: 90%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .modal h3 {
+      margin-top: 0;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .modal-buttons button {
+      margin-left: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-cancel {
+      background-color: #555;
+      color: white;
+    }
+    .btn-confirm {
+      background-color: #c0392b;
+      color: white;
+    }
+    .btn-cancel:hover {
+      background-color: #666;
+    }
+    .btn-confirm:hover {
+      background-color: #a93226;
+    }
+    
+    /* Loading indicator */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+      display: none;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -193,48 +329,53 @@
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <a href="../home.html" class="back-to-spaces">&larr; Back to Spaces</a>
+      <a href="#" class="back-to-spaces">&larr; Back to Spaces</a>
       <nav>
-        <a onclick="showSection('profile')">Profile</a>
-        <a onclick="showSection('account')">Account</a>
+        <a id="profile-nav" onclick="showSection('profile')" class="active">Profile</a>
+        <a id="account-nav" onclick="showSection('account')">Account</a>
       </nav>
     </div>
 
     <!-- Main Content -->
     <div class="content">
       <!-- Back Button -->
-      <button class="back-button" onclick="window.location.href='../homelogin.html'">⬅ Back</button>
+      <button class="back-button" onclick="window.location.href='#'">⬅ Back</button>
 
       <!-- PROFILE PAGE -->
       <section id="profile" class="active">
         <h2>Profile</h2>
-        <div class="avatar">d</div>
-        <form class="profile-form">
+        <div class="avatar" id="user-avatar">d</div>
+        <form class="profile-form" id="profileForm">
           <div class="form-group">
             <label for="fullName">Full name</label>
-            <input type="text" id="fullName" placeholder="discord 1111" />
+            <input type="text" id="fullName" placeholder="Your full name" />
+            <div class="error-message" id="fullName-error">Please enter your full name</div>
           </div>
           <div class="form-group">
             <label for="nickname">What should we call you?</label>
-            <input type="text" id="nickname" />
+            <input type="text" id="nickname" placeholder="Your nickname" />
+            <div class="error-message" id="nickname-error">Please enter a nickname</div>
           </div>
           <div class="form-group">
             <label for="workDescription">What best describes your work?</label>
-            <input type="text" id="workDescription" placeholder="Engineering" />
+            <input type="text" id="workDescription" placeholder="Engineering, Design, Management, etc." />
           </div>
           <div class="form-group">
             <label for="school">Where do you attend school?</label>
-            <input type="text" id="school" />
+            <input type="text" id="school" placeholder="School name (if applicable)" />
           </div>
           <div class="form-group">
-            <label for="major">What’s your major? (If in college/university)</label>
-            <input type="text" id="major" />
+            <label for="major">What's your major? (If in college/university)</label>
+            <input type="text" id="major" placeholder="Your major (if applicable)" />
           </div>
-          <button type="submit" class="btn-primary">Update Profile</button>
+          <button type="submit" class="btn-primary" id="update-profile-btn">
+            <span class="loading" id="profile-loading"></span>
+            Update Profile
+          </button>
         </form>
 
         <div class="logout">
-          <button class="btn-logout">Log Out</button>
+          <button class="btn-logout" id="logout-btn">Log Out</button>
         </div>
       </section>
 
@@ -249,24 +390,295 @@
               notes, settings, integration information, spaces, and every piece of data
               we have on you.
             </p>
-            <button class="btn-request">Request</button>
+            <button class="btn-request" id="request-data-btn">
+              <span class="loading" id="request-loading"></span>
+              Request
+            </button>
           </div>
 
           <div class="settings-box delete-box">
             <h3>Delete Account</h3>
             <p>Permanently delete your account and all associated data.</p>
-            <button class="btn-delete">Delete Account</button>
+            <button class="btn-delete" id="delete-account-btn">Delete Account</button>
           </div>
         </div>
       </section>
     </div>
   </div>
 
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal for Logout Confirmation -->
+  <div class="modal-overlay" id="logout-modal">
+    <div class="modal">
+      <h3>Confirm Logout</h3>
+      <p>Are you sure you want to log out of your account?</p>
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="cancel-logout">Cancel</button>
+        <button class="btn-confirm" id="confirm-logout">Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Delete Account Confirmation -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal">
+      <h3>Confirm Account Deletion</h3>
+      <p>Are you sure you want to permanently delete your account? This action cannot be undone.</p>
+      <div class="form-group">
+        <label for="delete-confirm">Type "DELETE" to confirm:</label>
+        <input type="text" id="delete-confirm" placeholder="DELETE" />
+        <div class="error-message" id="delete-confirm-error">Please type DELETE to confirm</div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="cancel-delete">Cancel</button>
+        <button class="btn-confirm" id="confirm-delete" disabled>Delete Account</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // DOM Elements
+    const profileSection = document.getElementById('profile');
+    const accountSection = document.getElementById('account');
+    const profileNav = document.getElementById('profile-nav');
+    const accountNav = document.getElementById('account-nav');
+    const profileForm = document.getElementById('profileForm');
+    const fullNameInput = document.getElementById('fullName');
+    const nicknameInput = document.getElementById('nickname');
+    const workInput = document.getElementById('workDescription');
+    const schoolInput = document.getElementById('school');
+    const majorInput = document.getElementById('major');
+    const logoutBtn = document.getElementById('logout-btn');
+    const requestDataBtn = document.getElementById('request-data-btn');
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const toast = document.getElementById('toast');
+    const logoutModal = document.getElementById('logout-modal');
+    const deleteModal = document.getElementById('delete-modal');
+    const confirmLogoutBtn = document.getElementById('confirm-logout');
+    const cancelLogoutBtn = document.getElementById('cancel-logout');
+    const confirmDeleteBtn = document.getElementById('confirm-delete');
+    const cancelDeleteBtn = document.getElementById('cancel-delete');
+    const deleteConfirmInput = document.getElementById('delete-confirm');
+    const userAvatar = document.getElementById('user-avatar');
+    const profileLoading = document.getElementById('profile-loading');
+    const requestLoading = document.getElementById('request-loading');
+    const updateProfileBtn = document.getElementById('update-profile-btn');
+
+    // Load stored profile data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadProfileData();
+      updateAvatarInitial();
+    });
+
+    // Navigation
     function showSection(sectionId) {
-      document.getElementById("profile").classList.remove("active");
-      document.getElementById("account").classList.remove("active");
-      document.getElementById(sectionId).classList.add("active");
+      // Remove active class from all sections and nav items
+      profileSection.classList.remove('active');
+      accountSection.classList.remove('active');
+      profileNav.classList.remove('active');
+      accountNav.classList.remove('active');
+      
+      // Add active class to selected section and nav item
+      document.getElementById(sectionId).classList.add('active');
+      document.getElementById(sectionId + '-nav').classList.add('active');
+    }
+
+    // Form Validation
+    function validateProfileForm() {
+      let isValid = true;
+      
+      // Validate Full Name
+      if (!fullNameInput.value.trim()) {
+        fullNameInput.classList.add('input-error');
+        document.getElementById('fullName-error').style.display = 'block';
+        isValid = false;
+      } else {
+        fullNameInput.classList.remove('input-error');
+        document.getElementById('fullName-error').style.display = 'none';
+      }
+      
+      // Validate Nickname
+      if (!nicknameInput.value.trim()) {
+        nicknameInput.classList.add('input-error');
+        document.getElementById('nickname-error').style.display = 'block';
+        isValid = false;
+      } else {
+        nicknameInput.classList.remove('input-error');
+        document.getElementById('nickname-error').style.display = 'none';
+      }
+      
+      return isValid;
+    }
+
+    // Profile Form Submission
+    profileForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (validateProfileForm()) {
+        // Show loading spinner
+        profileLoading.style.display = 'inline-block';
+        updateProfileBtn.disabled = true;
+        
+        // Simulate API call
+        setTimeout(function() {
+          // Save to local storage
+          saveProfileData();
+          
+          // Update avatar
+          updateAvatarInitial();
+          
+          // Hide loading spinner
+          profileLoading.style.display = 'none';
+          updateProfileBtn.disabled = false;
+          
+          // Show success message
+          showToast('Profile updated successfully!', 'success');
+        }, 1000);
+      }
+    });
+
+    // Save profile data to local storage
+    function saveProfileData() {
+      const profileData = {
+        fullName: fullNameInput.value.trim(),
+        nickname: nicknameInput.value.trim(),
+        work: workInput.value.trim(),
+        school: schoolInput.value.trim(),
+        major: majorInput.value.trim()
+      };
+      
+      localStorage.setItem('profileData', JSON.stringify(profileData));
+    }
+
+    // Load profile data from local storage
+    function loadProfileData() {
+      const profileData = JSON.parse(localStorage.getItem('profileData'));
+      
+      if (profileData) {
+        fullNameInput.value = profileData.fullName || '';
+        nicknameInput.value = profileData.nickname || '';
+        workInput.value = profileData.work || '';
+        schoolInput.value = profileData.school || '';
+        majorInput.value = profileData.major || '';
+      }
+    }
+
+    // Update avatar with user's initial
+    function updateAvatarInitial() {
+      const nickname = nicknameInput.value.trim();
+      const fullName = fullNameInput.value.trim();
+      
+      if (nickname) {
+        userAvatar.textContent = nickname.charAt(0).toUpperCase();
+      } else if (fullName) {
+        userAvatar.textContent = fullName.charAt(0).toUpperCase();
+      } else {
+        userAvatar.textContent = 'U';
+      }
+    }
+
+    // Logout button click
+    logoutBtn.addEventListener('click', function() {
+      logoutModal.style.display = 'flex';
+    });
+
+    // Confirm logout
+    confirmLogoutBtn.addEventListener('click', function() {
+      // Simulate logout
+      showToast('Logging out...', 'success');
+      
+      setTimeout(function() {
+        // In a real app, this would redirect to login page
+        logoutModal.style.display = 'none';
+        localStorage.clear();
+        // For demo purposes, just reload the page
+        window.location.reload();
+      }, 1000);
+    });
+
+    // Cancel logout
+    cancelLogoutBtn.addEventListener('click', function() {
+      logoutModal.style.display = 'none';
+    });
+
+    // Request data button click
+    requestDataBtn.addEventListener('click', function() {
+      // Show loading spinner
+      requestLoading.style.display = 'inline-block';
+      requestDataBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(function() {
+        // Hide loading spinner
+        requestLoading.style.display = 'none';
+        requestDataBtn.disabled = false;
+        
+        // Show success message
+        showToast('Data request submitted. You will receive an email shortly.', 'success');
+      }, 1500);
+    });
+
+    // Delete account button click
+    deleteAccountBtn.addEventListener('click', function() {
+      deleteModal.style.display = 'flex';
+      deleteConfirmInput.value = '';
+      confirmDeleteBtn.disabled = true;
+    });
+
+    // Delete confirmation input
+    deleteConfirmInput.addEventListener('input', function() {
+      if (this.value === 'DELETE') {
+        confirmDeleteBtn.disabled = false;
+        document.getElementById('delete-confirm-error').style.display = 'none';
+      } else {
+        confirmDeleteBtn.disabled = true;
+      }
+    });
+
+    // Confirm delete account
+    confirmDeleteBtn.addEventListener('click', function() {
+      if (deleteConfirmInput.value === 'DELETE') {
+        // Simulate account deletion
+        showToast('Deleting account...', 'error');
+        
+        setTimeout(function() {
+          deleteModal.style.display = 'none';
+          localStorage.clear();
+          // For demo purposes, just reload the page
+          window.location.reload();
+        }, 1500);
+      } else {
+        document.getElementById('delete-confirm-error').style.display = 'block';
+      }
+    });
+
+    // Cancel delete account
+    cancelDeleteBtn.addEventListener('click', function() {
+      deleteModal.style.display = 'none';
+    });
+
+    // Close modals if clicking outside
+    window.addEventListener('click', function(e) {
+      if (e.target === logoutModal) {
+        logoutModal.style.display = 'none';
+      }
+      if (e.target === deleteModal) {
+        deleteModal.style.display = 'none';
+      }
+    });
+
+    // Toast notification
+    function showToast(message, type) {
+      toast.textContent = message;
+      toast.className = 'toast';
+      toast.classList.add(type);
+      toast.style.display = 'block';
+      
+      setTimeout(function() {
+        toast.style.display = 'none';
+      }, 3000);
     }
   </script>
 </body>
