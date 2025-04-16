@@ -1,107 +1,112 @@
 // ai.js - Enhanced AI Search Bar Functionality
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Get elements
+    // Get elements - using more specific selectors to avoid duplicates
     const searchInput = document.querySelector('.search-bar input');
     const searchBar = document.querySelector('.search-bar');
     const gearIcon = document.querySelector('.gear-icon');
     
-    // Create results container (initially hidden)
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'ai-results';
-    resultsContainer.style.display = 'none';
+    // Only continue initialization if we have the search elements
+    if (!searchInput || !searchBar || !gearIcon) {
+        console.error('Search bar elements not found, aborting AI initialization');
+        return;
+    }
     
-    // Insert results container after the search bar
-    searchBar.parentNode.insertBefore(resultsContainer, searchBar.nextSibling);
+    // Check if we already have a results container
+    let resultsContainer = document.querySelector('.ai-results');
     
-    // Style the results container
-    resultsContainer.style.backgroundColor = '#1f1f1f';
-    resultsContainer.style.borderRadius = '8px';
-    resultsContainer.style.padding = '1rem';
-    resultsContainer.style.marginTop = '1rem';
-    resultsContainer.style.maxWidth = '600px';
-    resultsContainer.style.width = '100%';
-    resultsContainer.style.margin = '1rem auto';
-    resultsContainer.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-    resultsContainer.style.transition = 'all 0.3s ease';
-    resultsContainer.style.border = '1px solid #3d3d3d';
+    // Only create the results container if it doesn't exist
+    if (!resultsContainer) {
+        resultsContainer = document.createElement('div');
+        resultsContainer.className = 'ai-results';
+        resultsContainer.style.display = 'none';
+        
+        // Insert results container after the search bar
+        searchBar.parentNode.insertBefore(resultsContainer, searchBar.nextSibling);
+        
+        // Style the results container
+        resultsContainer.style.backgroundColor = '#1f1f1f';
+        resultsContainer.style.borderRadius = '8px';
+        resultsContainer.style.padding = '1rem';
+        resultsContainer.style.marginTop = '1rem';
+        resultsContainer.style.maxWidth = '600px';
+        resultsContainer.style.width = '100%';
+        resultsContainer.style.margin = '1rem auto';
+        resultsContainer.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+        resultsContainer.style.transition = 'all 0.3s ease';
+        resultsContainer.style.border = '1px solid #3d3d3d';
+    }
     
     // Enhanced AI response knowledge base
     const knowledgeBase = {
-        // Basic Information
         greeting: [
             "Hello! How can I help you today?", 
             "Hi there! Looking for freelance services?", 
             "Welcome to GetNak! How can I assist you?",
             "Hey! Ready to find the perfect freelancer for your project?"
         ],
-        
-        // Services
         services: {
             general: "GetNak offers a wide range of freelance services including web development, graphic design, writing, marketing, and more. Would you like to browse a specific category?",
-            webDevelopment: "Our web development services include frontend and backend development, full-stack solutions, e-commerce sites, and website maintenance. Prices typically start at $50/hour.",
-            design: "Graphic design services on GetNak include logo design, UI/UX design, illustration, branding, and more. Most designers offer packages starting at $35.",
-            writing: "Our writing services include blog posts, copywriting, technical writing, content marketing, and more. Rates typically start at $0.05 per word or $25 per hour.",
-            marketing: "Marketing services on GetNak include social media management, SEO, email marketing, PPC advertising, and content strategy. Most marketers offer monthly retainers starting at $300.",
-            videoProduction: "Video services include editing, animation, motion graphics, and video marketing. Prices typically start at $75/hour depending on complexity."
+            webDevelopment: "Our web development services include frontend and backend development, full-stack solutions, e-commerce sites, and website maintenance. Browse our services page to find the right developer for your project.",
+            design: "Graphic design services on GetNak include logo design, UI/UX design, illustration, branding, and more. Check out our services page to explore options from talented designers.",
+            writing: "Our writing services include blog posts, copywriting, technical writing, content marketing, and more. Visit our services page to connect with professional writers.",
+            marketing: "Marketing services on GetNak include social media management, SEO, email marketing, PPC advertising, and content strategy. Browse our services page to find marketing experts.",
+            videoProduction: "Video services include editing, animation, motion graphics, and video marketing. Check out our services page to find talented video professionals."
         },
-        
-        // Pricing & Payments
         pricing: {
-            general: "Pricing on GetNak varies by freelancer and service type. Most freelancers offer packages starting at $25, with custom quotes available for specific projects.",
-            fees: "GetNak charges a 10% service fee on all transactions. This fee covers our secure payment processing, dispute resolution, and platform maintenance.",
+            general: "Pricing on GetNak varies by freelancer and service type. Each freelancer sets their own rates based on experience and project requirements.",
+            fees: "GetNak charges a service fee on all transactions. This fee covers our secure payment processing, dispute resolution, and platform maintenance.",
             tiers: "Many freelancers offer tiered pricing (Basic, Standard, Premium) with different deliverables and turnaround times for each tier.",
             negotiation: "You can negotiate with freelancers by sending a custom request with your specific budget and requirements."
         },
-        
         payment: {
             methods: "GetNak offers secure payments through credit/debit cards, PayPal, and bank transfers. Funds are held in escrow until you approve the delivered work.",
             security: "All payment information is encrypted and processed through secure, PCI-compliant payment gateways.",
             escrow: "Our escrow system protects both clients and freelancers by holding payment until work is completed and approved.",
             refunds: "If you're not satisfied with the delivered work, you can request revisions or a refund within 14 days of delivery."
         },
-        
-        // Account Management
         account: {
             manage: "You can manage your account through the profile dropdown menu in the top right. This includes updating your profile, viewing your dashboard, and changing settings.",
             create: "To create an account, click the 'Sign up' button in the top right corner and follow the registration process.",
             verification: "Account verification requires a valid email address and phone number. Additional verification is required for freelancers.",
             delete: "To delete your account, go to Settings > Account > Delete Account. Note that this action cannot be undone."
         },
-        
-        // Content Management
-        upload: {
-            portfolio: "To upload your portfolio or samples, go to the 'Upload Files' section under 'Find Work'. You can upload images, documents, and other file types to showcase your work.",
-            formats: "GetNak supports upload of PNG, JPG, PDF, DOC/DOCX, and ZIP files up to 25MB each. For larger files, we recommend using cloud storage links.",
+        upload : {
+            portfolio: "To upload your portfolio or samples, go to the 'Upload' page. You can upload images, documents, and other file types to showcase your work.",
+            formats: "GetNak supports upload of PNG, JPG, PDF, DOC/DOCX, and ZIP files. For larger files, we recommend using cloud storage links.",
             organization: "You can organize your uploads into different folders and categories to showcase different aspects of your work.",
             visibility: "Control who can see your uploads by adjusting privacy settings for each file or collection."
         },
-        
-        // Process
         process: {
             hiring: "To hire a freelancer: 1) Browse services or post a job, 2) Compare proposals/portfolios, 3) Contact and discuss details, 4) Make payment through escrow, 5) Receive and approve work.",
             freelancing: "To start freelancing: 1) Create a detailed profile, 2) Upload portfolio samples, 3) Set up your service offerings, 4) Set your rates, 5) Start bidding on projects.",
             communication: "All communication should happen through GetNak's messaging system to ensure protection under our Terms of Service.",
             delivery: "Freelancers deliver work through our secure delivery system, which timestamps and records all submissions."
         },
-        
-        // Support & Help
+        dashboard: {
+            client: "Your dashboard allows you to track orders, communicate with freelancers, download completed work, and manage your projects in one place.",
+            freelancer: "From your dashboard, you can track orders, submit completed work, communicate with clients, and manage your services.",
+            tracking: "The dashboard provides real-time updates on project progress, milestone completions, and payment status.",
+            messages: "Access all your project-related messages directly from your dashboard for streamlined communication."
+        },
         contact: {
-            support: "Need more help? You can contact our support team through the 'Support' option under 'Why Us', or email us directly at support@getnak.com.",
+            support: "Need more help? You can contact our support team through the 'Support' page, or join our Discord community for assistance.",
             hours: "Our support team is available Monday-Friday, 9am-6pm EST. Typical response time is within 24 hours.",
             emergencies: "For urgent issues, use the live chat feature available at the bottom right of every page during business hours.",
-            faq: "Check our FAQ section for quick answers to common questions: getnak.com/faq"
+            faq: "Check our FAQ section for quick answers to common questions on our Support page."
         },
-        
-        // Security & Privacy
+        community: {
+            discord: "Join our Discord community to connect with other freelancers and clients, share tips, and get help with platform-related questions.",
+            joining: "To join our Discord community, click the 'Community' link in the navigation menu and follow the invitation link.",
+            benefits: "Our community offers networking opportunities, learning resources, and direct access to GetNak team members.",
+            events: "We regularly host events, webinars, and AMAs in our Discord community to help you grow your freelance business."
+        },
         security: {
             data: "GetNak uses industry-standard encryption to protect your personal and payment data. We never store complete credit card information on our servers.",
             privacy: "Your privacy is important to us. We only collect information necessary to provide our services and never sell your data to third parties.",
             protection: "We offer dispute resolution and buyer protection for all transactions made through our platform.",
             terms: "Review our full Terms of Service and Privacy Policy at getnak.com/terms and getnak.com/privacy."
         },
-        
-        // Platform Features
         features: {
             messaging: "Our built-in messaging system allows you to communicate with freelancers/clients directly through the platform.",
             contracts: "Create and manage legally binding contracts with our contract templates or custom agreements.",
@@ -109,30 +114,22 @@ document.addEventListener('DOMContentLoaded', function() {
             reviews: "Leave and receive reviews after project completion to build your reputation on the platform.",
             analytics: "Track your performance, earnings, and project history through detailed analytics dashboards."
         },
-        
-        // Getting Started
         getStarted: {
             client: "To get started as a client: 1) Create an account, 2) Browse services or post a job, 3) Connect with freelancers, 4) Make payment, 5) Receive quality work.",
             freelancer: "To get started as a freelancer: 1) Create a detailed profile, 2) Set up your services, 3) Build your portfolio, 4) Set your rates, 5) Start applying for jobs.",
             tips: "For best results, complete your profile with a professional photo, detailed description, and showcase your best work in your portfolio.",
             recommendation: "We recommend starting with smaller projects to build your reputation before taking on larger commitments."
         },
-        
-        // Default Fallback
         default: "I can help you find freelance services, manage projects, or learn more about GetNak. What would you like to know?"
     };
     
-    // AI response function - Enhanced with more comprehensive matching
     function getAIResponse(query) {
-        // Lowercase query for easier matching
         const lowercaseQuery = query.toLowerCase();
         
-        // Check for greetings
         if (containsAny(lowercaseQuery, ['hello', 'hi', 'hey', 'greetings', 'howdy', 'good day'])) {
             return randomItem(knowledgeBase.greeting);
         }
         
-        // Check for services-related queries
         if (containsAny(lowercaseQuery, ['service', 'offer', 'provide', 'work', 'job'])) {
             if (containsAny(lowercaseQuery, ['web', 'development', 'website', 'app', 'application'])) {
                 return knowledgeBase.services.webDevelopment;
@@ -149,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for pricing-related queries
         if (containsAny(lowercaseQuery, ['price', 'cost', 'fee', 'charge', 'expensive', 'cheap', 'affordable'])) {
             if (containsAny(lowercaseQuery, ['service fee', 'platform fee', 'commission'])) {
                 return knowledgeBase.pricing.fees;
@@ -162,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for account-related queries
         if (containsAny(lowercaseQuery, ['account', 'profile', 'dashboard', 'settings', 'login', 'sign up', 'register'])) {
             if (containsAny(lowercaseQuery, ['create', 'register', 'sign up', 'join'])) {
                 return knowledgeBase.account.create;
@@ -170,12 +165,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 return knowledgeBase.account.verification;
             } else if (containsAny(lowercaseQuery, ['delete', 'remove', 'cancel'])) {
                 return knowledgeBase.account.delete;
+            } else if (containsAny(lowercaseQuery, ['dashboard', 'track', 'order', 'submit'])) {
+                if (containsAny(lowercaseQuery, ['freelancer', 'provider', 'seller'])) {
+                    return knowledgeBase.dashboard.freelancer;
+                } else {
+                    return knowledgeBase.dashboard.client;
+                }
             } else {
                 return knowledgeBase.account.manage;
             }
         }
         
-        // Check for upload-related queries
         if (containsAny(lowercaseQuery, ['upload', 'portfolio', 'sample', 'showcase', 'file', 'document'])) {
             if (containsAny(lowercaseQuery, ['format', 'type', 'file type', 'supported'])) {
                 return knowledgeBase.upload.formats;
@@ -188,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for payment-related queries
         if (containsAny(lowercaseQuery, ['pay', 'payment', 'money', 'transaction', 'escrow', 'deposit'])) {
             if (containsAny(lowercaseQuery, ['secure', 'security', 'safe', 'protect'])) {
                 return knowledgeBase.payment.security;
@@ -201,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for process-related queries
         if (containsAny(lowercaseQuery, ['process', 'how to', 'steps', 'procedure', 'start'])) {
             if (containsAny(lowercaseQuery, ['hire', 'find', 'get', 'client'])) {
                 return knowledgeBase.process.hiring;
@@ -211,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return knowledgeBase.process.communication;
             } else if (containsAny(lowercaseQuery, ['deliver', 'submission', 'complete'])) {
                 return knowledgeBase.process.delivery;
-            } else if (containsAny(lowercaseQuery, ['start', 'begin', 'new', 'first time'])) {
+            } else if ( containsAny(lowercaseQuery, ['start', 'begin', 'new', 'first time'])) {
                 if (containsAny(lowercaseQuery, ['freelancer', 'seller', 'provider'])) {
                     return knowledgeBase.getStarted.freelancer;
                 } else {
@@ -220,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for help and support queries
         if (containsAny(lowercaseQuery, ['help', 'support', 'contact', 'assistance', 'issue', 'problem'])) {
             if (containsAny(lowercaseQuery, ['hours', 'time', 'available', 'when'])) {
                 return knowledgeBase.contact.hours;
@@ -233,7 +230,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for security-related queries
+        if (containsAny(lowercaseQuery, ['community', 'discord', 'chat', 'forum', 'connect', 'network'])) {
+            if (containsAny(lowercaseQuery, ['join', 'access', 'invitation', 'invite'])) {
+                return knowledgeBase.community.joining;
+            } else if (containsAny(lowercaseQuery, ['benefit', 'advantage', 'value'])) {
+                return knowledgeBase.community.benefits;
+            } else if (containsAny(lowercaseQuery, ['event', 'webinar', 'workshop', 'ama'])) {
+                return knowledgeBase.community.events;
+            } else {
+                return knowledgeBase.community.discord;
+            }
+        }
+        
         if (containsAny(lowercaseQuery, ['security', 'private', 'privacy', 'protect', 'safe', 'data'])) {
             if (containsAny(lowercaseQuery, ['data', 'information', 'personal'])) {
                 return knowledgeBase.security.data;
@@ -246,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for feature-related queries
         if (containsAny(lowercaseQuery, ['feature', 'tool', 'function', 'capability', 'able to'])) {
             if (containsAny(lowercaseQuery, ['message', 'chat', 'communicate', 'talk'])) {
                 return knowledgeBase.features.messaging;
@@ -261,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check for getting started queries
         if (containsAny(lowercaseQuery, ['get started', 'begin', 'new', 'first time', 'recommendation', 'advise'])) {
             if (containsAny(lowercaseQuery, ['client', 'buyer', 'customer'])) {
                 return knowledgeBase.getStarted.client;
@@ -274,26 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Web development specific questions
-        if (containsAny(lowercaseQuery, ['website', 'web development', 'app', 'landing page'])) {
-            return "Our web developers can create custom websites, landing pages, web applications, e-commerce stores, and more. You can find qualified developers starting at $50/hour. Would you like to browse web development services?";
-        }
-        
-        // Design specific questions
-        if (containsAny(lowercaseQuery, ['logo', 'design', 'brand', 'graphic'])) {
-            return "Our designers offer logo creation, branding packages, UI/UX design, illustration, and print design. Most logo design packages start at $150. Would you like to see examples from our top designers?";
-        }
-        
-        // Writing specific questions
-        if (containsAny(lowercaseQuery, ['content', 'blog', 'article', 'copywriting', 'seo writing'])) {
-            return "GetNak has expert writers for blog posts, SEO content, technical documentation, email copy, and more. Rates typically start at $0.05-0.15 per word depending on expertise. Would you like to browse writing services?";
-        }
-        
-        // Default response for anything else
         return knowledgeBase.default;
     }
     
-    // Helper functions
     function containsAny(text, keywords) {
         return keywords.some(keyword => text.includes(keyword));
     }
@@ -302,11 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return array[Math.floor(Math.random() * array.length)];
     }
     
-    // Function to generate chat-like conversations with follow-up suggestions
     function generateResponse(query) {
         const response = getAIResponse(query);
         
-        // Add follow-up suggestions based on the query context
         let followUpSuggestions = [];
         const lowercaseQuery = query.toLowerCase();
         
@@ -318,10 +305,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ];
         } else if (containsAny(lowercaseQuery, ['payment', 'price', 'cost'])) {
             followUpSuggestions = [
-                "Payment Methods", 
-                "Service Fees", 
-                "Refund Policy"
-            ];
+                    "Payment Methods", 
+                    "Service Fees", 
+                    "Refund Policy"
+                ];
         } else if (containsAny(lowercaseQuery, ['account', 'profile', 'sign'])) {
             followUpSuggestions = [
                 "Create Account", 
@@ -334,8 +321,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Start as Freelancer", 
                 "Beginner Tips"
             ];
+        } else if (containsAny(lowercaseQuery, ['dashboard', 'track', 'order'])) {
+            followUpSuggestions = [
+                "Track Orders", 
+                "Submit Work", 
+                "Download Deliverables"
+            ];
+        } else if (containsAny(lowercaseQuery, ['community', 'discord', 'connect'])) {
+            followUpSuggestions = [
+                "Join Discord", 
+                "Community Benefits", 
+                "Upcoming Events"
+            ];
         } else {
-            // Default suggestions
             followUpSuggestions = [
                 "Services Overview", 
                 "How to Hire", 
@@ -349,574 +347,353 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // Handle search input
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const query = searchInput.value.trim();
-            
-            if (query !== '') {
-                // Show loading indicator
-                resultsContainer.style.display = 'block';
-                resultsContainer.innerHTML = '<div class="loading">Processing your request...</div>';
+    if (!searchInput.getAttribute('data-ai-initialized')) {
+        searchInput.setAttribute('data-ai-initialized', 'true');
+        
+        searchInput.addEventListener('keypress', function handleSearchInput(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = searchInput.value.trim();
                 
-                // Add spinning animation to the gear icon
-                gearIcon.style.animation = 'spin 1s linear infinite';
-                
-                // Simulate AI processing delay
-                setTimeout(() => {
-                    const responseObj = generateResponse(query);
+                if (query !== '') {
+                    resultsContainer.style.display = 'block';
+                    resultsContainer.innerHTML = '<div class="loading">Processing your request...</div>';
                     
-                    // Create the follow-up suggestion buttons
-                    let suggestionsHTML = '';
-                    if (responseObj.suggestions && responseObj.suggestions.length > 0) {
-                        suggestionsHTML = `
-                            <div class="ai-suggestions">
-                                <div class="suggestion-label">Quick follow-ups:</div>
-                                <div class="suggestion-buttons">
-                                    ${responseObj.suggestions.map(suggestion => 
-                                        `<button class="suggestion-btn">${suggestion}</button>`
-                                    ).join('')}
+                    gearIcon.style.animation = 'spin 1s linear infinite';
+                    
+                    setTimeout(() => {
+                        const responseObj = generateResponse(query);
+                        
+                        let suggestionsHTML = '';
+                        if (responseObj.suggestions && responseObj.suggestions.length > 0) {
+                            suggestionsHTML = `
+                                <div class="ai-suggestions">
+                                    <div class="suggestion-label">Quick follow-ups:</div>
+                                    <div class="suggestion-buttons">
+                                        ${responseObj.suggestions.map(suggestion => 
+                                            `<button class="suggestion-btn">${suggestion}</button>`
+                                        ).join('')}
+                                    </div>
                                 </div>
+                            `;
+                        }
+                        
+                        resultsContainer.innerHTML = `
+                            <div class="ai-response">
+                                <div class="ai-response-header">
+                                    <div class="ai-avatar">AI</div>
+                                    <div class="ai-title">GetNak Assistant</div>
+                                </div>
+                                <div class="ai-response-content">${responseObj.text}</div>
+                                ${suggestionsHTML}
                             </div>
                         `;
-                    }
-                    
-                    // Display the response with suggestions
-                    resultsContainer.innerHTML = `
-                        <div class="ai-response">
-                            <div class="ai-response-header">
-                                <div class="ai-avatar">AI</div>
-                                <div class="ai-title">GetNak Assistant</div>
-                            </div>
-                            <div class="ai-response-content">${responseObj.text}</div>
-                            ${suggestionsHTML}
-                        </div>
-                    `;
-                    
-                    // Style the response elements
-                    const aiResponse = resultsContainer.querySelector('.ai-response');
-                    aiResponse.style.display = 'flex';
-                    aiResponse.style.flexDirection = 'column';
-                    aiResponse.style.gap = '0.8rem';
-                    
-                    const aiResponseHeader = resultsContainer.querySelector('.ai-response-header');
-                    aiResponseHeader.style.display = 'flex';
-                    aiResponseHeader.style.alignItems = 'center';
-                    aiResponseHeader.style.gap = '0.7rem';
-                    
-                    const aiAvatar = resultsContainer.querySelector('.ai-avatar');
-                    aiAvatar.style.width = '24px';
-                    aiAvatar.style.height = '24px';
-                    aiAvatar.style.borderRadius = '50%';
-                    aiAvatar.style.backgroundColor = '#ffcc00';
-                    aiAvatar.style.display = 'flex';
-                    aiAvatar.style.alignItems = 'center';
-                    aiAvatar.style.justifyContent = 'center';
-                    aiAvatar.style.fontSize = '12px';
-                    aiAvatar.style.fontWeight = 'bold';
-                    aiAvatar.style.color = '#000000';
-                    
-                    const aiTitle = resultsContainer.querySelector('.ai-title');
-                    aiTitle.style.fontWeight = '600';
-                    aiTitle.style.color = '#ffffff';
-                    
-                    const aiResponseContent = resultsContainer.querySelector('.ai-response-content');
-                    aiResponseContent.style.lineHeight = '1.5';
-                    aiResponseContent.style.color = '#cccccc';
-                    aiResponseContent.style.padding = '0.5rem 0';
-                    
-                    // Style suggestion elements if they exist
-                    const aiSuggestions = resultsContainer.querySelector('.ai-suggestions');
-                    if (aiSuggestions) {
-                        aiSuggestions.style.marginTop = '1rem';
-                        aiSuggestions.style.display = 'flex';
-                        aiSuggestions.style.flexDirection = 'column';
-                        aiSuggestions.style.gap = '0.5rem';
                         
-                        const suggestionLabel = resultsContainer.querySelector('.suggestion-label');
-                        suggestionLabel.style.fontSize = '0.85rem';
-                        suggestionLabel.style.color = '#999999';
+                        const aiResponse = resultsContainer.querySelector('.ai-response');
+                        aiResponse.style.display = 'flex';
+                        aiResponse.style.flexDirection = 'column';
+                        aiResponse.style.gap = '0.8rem';
                         
-                        const suggestionButtons = resultsContainer.querySelector('.suggestion-buttons');
-                        suggestionButtons.style.display = 'flex';
-                        suggestionButtons.style.flexWrap = 'wrap';
-                        suggestionButtons.style.gap = '0.5rem';
+                        const aiResponseHeader = resultsContainer.querySelector('.ai-response-header');
+                        aiResponseHeader.style.display = 'flex';
+                        aiResponseHeader.style.alignItems = 'center';
+                        aiResponseHeader.style.gap = '0.7rem';
                         
-                        const suggestionBtns = resultsContainer.querySelectorAll('.suggestion-btn');
-                        suggestionBtns.forEach(btn => {
-                            btn.style.backgroundColor = '#333333';
-                            btn.style.color = '#ffffff';
-                            btn.style.border = 'none';
-                            btn.style.borderRadius = '16px';
-                            btn.style.padding = '0.4rem 0.8rem';
-                            btn.style.fontSize = '0.85rem';
-                            btn.style.cursor = 'pointer';
-                            btn.style.transition = 'background-color 0.2s ease';
+                        const aiAvatar = resultsContainer.querySelector('.ai-avatar');
+                        aiAvatar.style.width = '24px';
+                        aiAvatar.style.height = '24px';
+                        aiAvatar.style.borderRadius = '50%';
+                        aiAvatar.style.backgroundColor = '#ffcc00';
+                        aiAvatar.style.display = 'flex';
+                        aiAvatar.style.alignItems = 'center';
+                        aiAvatar.style.justifyContent = 'center';
+                        aiAvatar.style.fontSize = '12px';
+                        aiAvatar.style.fontWeight = 'bold';
+                        aiAvatar.style.color = '#000000';
+                        
+                        const aiTitle = resultsContainer.querySelector('.ai-title');
+                        aiTitle.style.fontWeight = '600';
+                        aiTitle.style.color = '#ffffff';
+                        
+                        const aiResponseContent = resultsContainer.querySelector('.ai-response-content');
+                        aiResponseContent.style.lineHeight = '1.5';
+                        aiResponseContent.style.color = '#cccccc';
+                        aiResponseContent.style.padding = '0.5rem 0';
+                        
+                        const aiSuggestions = resultsContainer.querySelector('.ai-suggestions');
+                        if (aiSuggestions) {
+                            aiSuggestions.style.marginTop = '1rem';
+                            aiSuggestions.style.display = 'flex';
+                            aiSuggestions.style.flexDirection = 'column';
+                            aiSuggestions.style.gap = '0.5rem';
                             
-                            // Add hover effect
-                            btn.addEventListener('mouseover', function() {
-                                this.style.backgroundColor = '#444444';
-                            });
+                            const suggestionLabel = resultsContainer.querySelector('.suggestion-label');
+                            suggestionLabel.style.fontSize = '0.85rem';
+                            suggestionLabel.style.color = '#999999';
                             
-                            btn.addEventListener('mouseout', function() {
-                                this.style.backgroundColor = '#333333';
-                            });
+                            const suggestionButtons = resultsContainer.querySelector('.suggestion-buttons');
+                            suggestionButtons.style.display = 'flex';
+                            suggestionButtons.style.flexWrap = 'wrap';
+                            suggestionButtons.style.gap = '0.5rem';
                             
-                            // Add click handler for follow-up questions
-                            btn.addEventListener('click', function() {
-                                searchInput.value = this.textContent;
+                            const suggestionBtns = resultsContainer.querySelectorAll('.suggestion-btn');
+                            suggestionBtns.forEach(btn => {
+                                btn.style.backgroundColor = '#333333';
+                                btn.style.color = '#ffffff';
+                                btn.style.border = 'none';
+                                btn.style.borderRadius = '16px';
+                                btn.style.padding = '0.4rem 0.8rem';
+                                btn.style.fontSize = '0.85rem';
+                                btn.style.cursor = 'pointer';
+                                btn.style.transition = 'background-color 0.2s ease';
                                 
-                                // Trigger a new search with the suggestion
-                                const event = new KeyboardEvent('keypress', {
-                                    key: 'Enter',
-                                    code: 'Enter',
-                                    keyCode: 13,
-                                    which: 13,
-                                    bubbles: true
+                                btn.addEventListener('mouseover', function() {
+                                    this.style.backgroundColor = '#444444';
                                 });
-                                searchInput.dispatchEvent(event);
+                                
+                                btn.addEventListener('mouseout', function() {
+                                    this.style.backgroundColor = '#333333';
+                                });
+                                
+                                btn.addEventListener('click', function() {
+                                    searchInput.value = this.textContent;
+                                    
+                                    const event = new KeyboardEvent('keypress', {
+                                        key: 'Enter',
+                                        code: 'Enter',
+                                        keyCode: 13,
+                                        which: 13,
+                                        bubbles: true
+                                    });
+                                    searchInput.dispatchEvent(event);
+                                });
                             });
-                        });
-                    }
-                    
-                    // Stop the gear icon animation
-                    gearIcon.style.animation = '';
-                }, 1000);
-            }
-        }
-    });
-    
-    // Enhanced settings menu with more options
-    gearIcon.addEventListener('click', function() {
-        // Create a modal for AI settings
-        const settingsModal = document.createElement('div');
-        settingsModal.className = 'ai-settings-modal';
-        document.body.appendChild(settingsModal);
-        
-        // Style the modal
-        settingsModal.style.position = 'fixed';
-        settingsModal.style.top = '0';
-        settingsModal.style.left = '0';
-        settingsModal.style.width = '100%';
-        settingsModal.style.height = '100%';
-        settingsModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        settingsModal.style.display = 'flex';
-        settingsModal.style.justifyContent = 'center';
-        settingsModal.style.alignItems = 'center';
-        settingsModal.style.zIndex = '1000';
-        
-        // Create modal content
-        const modalContent = document.createElement('div');
-        modalContent.className = 'modal-content';
-        settingsModal.appendChild(modalContent);
-        
-        // Style modal content
-        modalContent.style.backgroundColor = '#1f1f1f';
-        modalContent.style.borderRadius = '8px';
-        modalContent.style.padding = '1.5rem';
-        modalContent.style.width = '90%';
-        modalContent.style.maxWidth = '500px';
-        modalContent.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
-        modalContent.style.border = '1px solid #3d3d3d';
-        modalContent.style.position = 'relative';
-        
-        // Add close button
-        const closeButton = document.createElement('button');
-        closeButton.innerHTML = '&times;';
-        closeButton.className = 'close-button';
-        modalContent.appendChild(closeButton);
-        
-        // Style close button
-        closeButton.style.position = 'absolute';
-        closeButton.style.right = '1rem';
-        closeButton.style.top = '1rem';
-        closeButton.style.backgroundColor = 'transparent';
-        closeButton.style.border = 'none';
-        closeButton.style.fontSize = '1.5rem';
-        closeButton.style.color = '#cccccc';
-        closeButton.style.cursor = 'pointer';
-        
-        // Add settings content
-        modalContent.innerHTML += `
-            <h2 style="color: #ffffff; margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem;">GetNak AI Assistant Settings</h2>
-            
-            <div class="settings-section">
-                <h3 style="color: #cccccc; font-size: 1rem; margin-bottom: 0.75rem;">Response Type</h3>
-                <div class="settings-options">
-                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #ffffff;">
-                        <input type="radio" name="responseType" value="concise" checked style="margin-right: 0.5rem;"> 
-                        Concise
-                    </label>
-                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #ffffff;">
-                        <input type="radio" name="responseType" value="detailed" style="margin-right: 0.5rem;"> 
-                        Detailed
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-section" style="margin-top: 1.25rem;">
-               <h3 style="color: #cccccc; font-size: 1rem; margin-bottom: 0.75rem;">Follow-up Suggestions</h3>
-                <div class="settings-options">
-                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #ffffff;">
-                        <input type="checkbox" name="showSuggestions" checked style="margin-right: 0.5rem;"> 
-                        Show follow-up suggestions
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-section" style="margin-top: 1.25rem;">
-                <h3 style="color: #cccccc; font-size: 1rem; margin-bottom: 0.75rem;">History</h3>
-                <div class="settings-options">
-                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #ffffff;">
-                        <input type="checkbox" name="saveHistory" checked style="margin-right: 0.5rem;"> 
-                        Save search history
-                    </label>
-                    <button id="clearHistory" style="background-color: #333333; color: #ffffff; border: none; border-radius: 4px; padding: 0.5rem 0.75rem; cursor: pointer; margin-top: 0.5rem; font-size: 0.9rem;">Clear History</button>
-                </div>
-            </div>
-            
-            <div class="settings-section" style="margin-top: 1.25rem;">
-                <h3 style="color: #cccccc; font-size: 1rem; margin-bottom: 0.75rem;">Appearance</h3>
-                <div class="settings-options">
-                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #ffffff;">
-                        <input type="checkbox" name="darkMode" checked style="margin-right: 0.5rem;"> 
-                        Dark mode
-                    </label>
-                </div>
-            </div>
-            
-            <div style="margin-top: 1.5rem; text-align: right;">
-                <button id="saveSettings" style="background-color: #ffcc00; color: #000000; border: none; border-radius: 4px; padding: 0.5rem 1rem; cursor: pointer; font-weight: 600;">Save Settings</button>
-            </div>
-        `;
-        
-        // Close modal on close button click
-        closeButton.addEventListener('click', function() {
-            document.body.removeChild(settingsModal);
-        });
-        
-        // Close modal when clicking outside the modal content
-        settingsModal.addEventListener('click', function(e) {
-            if (e.target === settingsModal) {
-                document.body.removeChild(settingsModal);
-            }
-        });
-        
-        // Save settings button functionality
-        const saveSettingsBtn = document.getElementById('saveSettings');
-        saveSettingsBtn.addEventListener('click', function() {
-            // Get selected response type
-            const responseType = document.querySelector('input[name="responseType"]:checked').value;
-            
-            // Get selected AI model
-            const aiModel = document.querySelector('input[name="aiModel"]:checked').value;
-            
-            // Get checkbox values
-            const showSuggestions = document.querySelector('input[name="showSuggestions"]').checked;
-            const saveHistory = document.querySelector('input[name="saveHistory"]').checked;
-            const darkMode = document.querySelector('input[name="darkMode"]').checked;
-            
-            // Save settings to localStorage
-            const settings = {
-                responseType,
-                aiModel,
-                showSuggestions,
-                saveHistory,
-                darkMode
-            };
-            
-            localStorage.setItem('getnak_ai_settings', JSON.stringify(settings));
-            
-            // Show success notification
-            const notification = document.createElement('div');
-            notification.textContent = 'Settings saved successfully!';
-            notification.style.position = 'fixed';
-            notification.style.bottom = '1rem';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.backgroundColor = '#4caf50';
-            notification.style.color = 'white';
-            notification.style.padding = '0.75rem 1.5rem';
-            notification.style.borderRadius = '4px';
-            notification.style.zIndex = '1001';
-            document.body.appendChild(notification);
-            
-            // Remove notification after 3 seconds
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 3000);
-            
-            // Close modal
-            document.body.removeChild(settingsModal);
-            
-            // Apply settings (for demonstration, we're just logging them)
-            console.log('AI Settings saved:', settings);
-        });
-        
-        // Clear history button functionality
-        const clearHistoryBtn = document.getElementById('clearHistory');
-        clearHistoryBtn.addEventListener('click', function() {
-            // Clear search history from localStorage
-            localStorage.removeItem('getnak_search_history');
-            
-            // Show confirmation
-            clearHistoryBtn.textContent = 'History Cleared!';
-            clearHistoryBtn.style.backgroundColor = '#4caf50';
-            
-            // Reset button after 2 seconds
-            setTimeout(() => {
-                clearHistoryBtn.textContent = 'Clear History';
-                clearHistoryBtn.style.backgroundColor = '#333333';
-            }, 2000);
-        });
-    });
-    
-    // Add search history functionality
-    function saveSearchQuery(query) {
-        if (!query.trim()) return;
-        
-        let searchHistory = JSON.parse(localStorage.getItem('getnak_search_history') || '[]');
-        
-        // Add the new query to the beginning of the array
-        if (!searchHistory.includes(query)) {
-            searchHistory.unshift(query);
-            
-            // Limit to 10 most recent searches
-            if (searchHistory.length > 10) {
-                searchHistory = searchHistory.slice(0, 10);
-            }
-            
-            localStorage.setItem('getnak_search_history', JSON.stringify(searchHistory));
-        }
-    }
-    
-    // Load search history when focusing on search input
-    searchInput.addEventListener('focus', function() {
-        const settings = JSON.parse(localStorage.getItem('getnak_ai_settings') || '{}');
-        
-        // Only show history if saveHistory setting is enabled (or not set yet)
-        if (settings.saveHistory !== false) {
-            const searchHistory = JSON.parse(localStorage.getItem('getnak_search_history') || '[]');
-            
-            if (searchHistory.length > 0) {
-                // Create history dropdown
-                let historyDropdown = document.querySelector('.search-history-dropdown');
-                
-                if (!historyDropdown) {
-                    historyDropdown = document.createElement('div');
-                    historyDropdown.className = 'search-history-dropdown';
-                    searchBar.parentNode.insertBefore(historyDropdown, searchBar.nextSibling);
-                    
-                    // Style history dropdown
-                    historyDropdown.style.backgroundColor = '#1f1f1f';
-                    historyDropdown.style.borderRadius = '8px';
-                    historyDropdown.style.padding = '0.5rem 0';
-                    historyDropdown.style.marginTop = '0.5rem';
-                    historyDropdown.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-                    historyDropdown.style.border = '1px solid #3d3d3d';
-                    historyDropdown.style.maxHeight = '200px';
-                    historyDropdown.style.overflowY = 'auto';
-                    historyDropdown.style.zIndex = '100';
-                    historyDropdown.style.width = searchBar.offsetWidth + 'px';
-                }
-                
-                // Add history items
-                historyDropdown.innerHTML = `
-                    <div style="padding: 0.5rem 1rem; color: #999999; font-size: 0.85rem; font-weight: 600;">Recent Searches</div>
-                `;
-                
-                searchHistory.forEach(item => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    historyItem.textContent = item;
-                    historyDropdown.appendChild(historyItem);
-                    
-                    // Style history item
-                    historyItem.style.padding = '0.5rem 1rem';
-                    historyItem.style.cursor = 'pointer';
-                    historyItem.style.color = '#cccccc';
-                    
-                    // Add hover effect
-                    historyItem.addEventListener('mouseover', function() {
-                        this.style.backgroundColor = '#333333';
-                    });
-                    
-                    historyItem.addEventListener('mouseout', function() {
-                        this.style.backgroundColor = 'transparent';
-                    });
-                    
-                    // Set search input value when clicking on history item
-                    historyItem.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        historyDropdown.style.display = 'none';
+                        }
                         
-                        // Trigger search
-                        const event = new KeyboardEvent('keypress', {
-                            key: 'Enter',
-                            code: 'Enter',
-                            keyCode: 13,
-                            which: 13,
-                            bubbles: true
-                        });
-                        searchInput.dispatchEvent(event);
-                    });
-                });
-                
-                historyDropdown.style.display = 'block';
+                        gearIcon.style.animation = '';
+                    }, 1000);
+                }
             }
-        }
-    });
-    
-    // Hide history dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target)) {
-            const historyDropdown = document.querySelector('.search-history-dropdown');
-            if (historyDropdown) {
-                historyDropdown.style.display = 'none';
-            }
-        }
-    });
-    
-    // Save search query when searching
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const query = searchInput.value.trim();
-            if (query !== '') {
-                saveSearchQuery(query);
-            }
-        }
-    });
-    
-    // Add keyboard shortcuts for the search bar
-    document.addEventListener('keydown', function(e) {
-        // Alt + S to focus the search bar
-        if (e.altKey && e.key === 's') {
-            e.preventDefault();
-            searchInput.focus();
-        }
-        
-        // Escape to clear search and hide results
-        if (e.key === 'Escape') {
-            searchInput.value = '';
-            resultsContainer.style.display = 'none';
-            
-            const historyDropdown = document.querySelector('.search-history-dropdown');
-            if (historyDropdown) {
-                historyDropdown.style.display = 'none';
-            }
-        }
-    });
-    
-    // Apply saved settings on load
-    const savedSettings = JSON.parse(localStorage.getItem('getnak_ai_settings') || '{}');
-    
-    // Apply dark mode if set
-    if (savedSettings.darkMode === false) {
-        // Apply light mode styles (this is just a placeholder - you would need to implement proper theming)
-        console.log('Light mode would be applied here');
+        });
     }
     
-    // Create keyboard shortcut info toggle
-    const shortcutInfo = document.createElement('div');
-    shortcutInfo.className = 'keyboard-shortcut-info';
-    shortcutInfo.innerHTML = '?';
-    shortcutInfo.title = 'Keyboard Shortcuts';
-    searchBar.appendChild(shortcutInfo);
-    
-    // Style shortcut info button
-    shortcutInfo.style.width = '24px';
-    shortcutInfo.style.height = '24px';
-    shortcutInfo.style.borderRadius = '50%';
-    shortcutInfo.style.backgroundColor = '#333333';
-    shortcutInfo.style.color = '#ffffff';
-    shortcutInfo.style.display = 'flex';
-    shortcutInfo.style.alignItems = 'center';
-    shortcutInfo.style.justifyContent = 'center';
-    shortcutInfo.style.marginLeft = '10px';
-    shortcutInfo.style.fontSize = '14px';
-    shortcutInfo.style.cursor = 'pointer';
-    
-    // Show keyboard shortcuts on click
-    shortcutInfo.addEventListener('click', function() {
-        const shortcutsModal = document.createElement('div');
-        shortcutsModal.className = 'shortcuts-modal';
-        document.body.appendChild(shortcutsModal);
+    if (!gearIcon.getAttribute('data-ai-settings-initialized')) {
+        gearIcon.setAttribute('data-ai-settings-initialized', 'true');
         
-        // Style shortcuts modal
-        shortcutsModal.style.position = 'fixed';
-        shortcutsModal.style.top = '0';
-        shortcutsModal.style.left = '0';
-        shortcutsModal.style.width = '100%';
-        shortcutsModal.style.height = '100%';
-        shortcutsModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        shortcutsModal.style.display = 'flex';
-        shortcutsModal.style.justifyContent = 'center';
-        shortcutsModal.style.alignItems = 'center';
-        shortcutsModal.style.zIndex = '1000';
-        
-        // Create modal content
-        const modalContent = document.createElement('div');
-        modalContent.className = 'modal-content';
-        shortcutsModal.appendChild(modalContent);
-        
-        // Style modal content
-        modalContent.style.backgroundColor = '#1f1f1f';
-        modalContent.style.borderRadius = '8px';
-        modalContent.style.padding = '1.5rem';
-        modalContent.style.width = '90%';
-        modalContent.style.maxWidth = '400px';
-        modalContent.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
-        modalContent.style.border = '1px solid #3d3d3d';
-        
-        // Add content
-        modalContent.innerHTML = `
-            <h2 style="color: #ffffff; margin-top: 0; margin-bottom: 1rem; font-size: 1.25rem;">Keyboard Shortcuts</h2>
-            
-            <div style="margin-bottom: 0.75rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span style="color: #cccccc;">Focus search</span>
-                    <span style="color: #ffffff; background-color: #333333; padding: 0.1rem 0.5rem; border-radius: 4px;">Alt + S</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span style="color: #cccccc;">Clear search</span>
-                    <span style="color: #ffffff; background-color: #333333; padding: 0.1rem 0.5rem; border-radius: 4px;">Esc</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span style="color: #cccccc;">Submit search</span>
-                    <span style="color: #ffffff; background-color: #333333; padding: 0.1rem 0.5rem; border-radius: 4px;">Enter</span>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="close-shortcuts" style="background-color: #333333; color: #ffffff; border: none; border-radius: 4px; padding: 0.5rem 1rem; cursor: pointer;">Close</button>
-            </div>
-        `;
-        
-        // Close modal when clicking close button
-        const closeShortcutsBtn = modalContent.querySelector('.close-shortcuts');
-        closeShortcutsBtn.addEventListener('click', function() {
-            document.body.removeChild(shortcutsModal);
-        });
-        
-        // Close modal when clicking outside
-        shortcutsModal.addEventListener('click', function(e) {
-            if (e.target === shortcutsModal) {
-                document.body.removeChild(shortcutsModal);
+        gearIcon.addEventListener('click', function() {
+            const existingModal = document.querySelector('.ai-settings-modal');
+            if (existingModal) {
+                existingModal.remove();
             }
+            
+            const settingsModal = document.createElement('div');
+            settingsModal.className = 'ai-settings-modal';
+            document.body.appendChild(settingsModal);
+            
+            settingsModal.style.position = 'fixed';
+            settingsModal.style.top = '50%';
+            settingsModal.style.left = '50%';
+            settingsModal.style.transform = 'translate(-50%, -50%)';
+            settingsModal.style.backgroundColor = '#1f1f1f';
+            settingsModal.style.borderRadius = '8px';
+            settingsModal.style.padding = '1.5rem';
+            settingsModal.style.width = '320px';
+            settingsModal.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            settingsModal.style.zIndex = '1000';
+            settingsModal.style.border = '1px solid #3d3d3d';
+            
+            settingsModal.innerHTML = `
+                <div class="modal-header">
+                    <h3>AI Search Settings</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-content">
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="ai-enabled" checked>
+                            <span>Enable AI Assistant</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="show-suggestions" checked>
+                            <span>Show follow-up suggestions</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Response tone:</label>
+                        <select id="ai-tone">
+                            <option value="friendly">Friendly</option>
+                            <option value="professional">Professional</option>
+                            <option value="concise">Concise</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <button id="clear-history">Clear Search History</button>
+                    </div>
+                </div>
+            `;
+            
+            const modalHeader = settingsModal.querySelector('.modal-header');
+            modalHeader.style.display = 'flex';
+            modalHeader.style.justifyContent = 'space-between';
+            modalHeader.style.alignItems = 'center';
+            modalHeader.style.marginBottom = '1rem';
+            modalHeader.style.borderBottom = '1px solid #3d3d3d';
+            modalHeader.style.paddingBottom = '0.8rem';
+            
+            const modalTitle = settingsModal.querySelector('h3');
+            modalTitle.style.margin = '0';
+            modalTitle.style.color = '#ffffff';
+            modalTitle.style.fontSize = '1.2rem';
+            
+            const closeBtn = settingsModal.querySelector('.close-btn');
+            closeBtn.style.background = 'none';
+            closeBtn.style.border = 'none';
+            closeBtn.style.color = '#ffffff';
+            closeBtn.style.fontSize = '1.5rem';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.padding = '0';
+            closeBtn.style.lineHeight = '1';
+            
+            const settingItems = settingsModal.querySelectorAll('.setting-item');
+            settingItems.forEach(item => {
+                item.style.margin = '1rem 0';
+                item .style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.justifyContent = 'space-between';
+            });
+            
+            const labels = settingsModal.querySelectorAll('label');
+            labels.forEach(label => {
+                label.style.color = '#cccccc';
+                label.style.display = 'flex';
+                label.style.alignItems = 'center';
+                label.style.gap = '0.5rem';
+                label.style.cursor = 'pointer';
+            });
+            
+            const select = settingsModal.querySelector('select');
+            select.style.backgroundColor = '#333333';
+            select.style.color = '#ffffff';
+            select.style.border = '1px solid #4d4d4d';
+            select.style.borderRadius = '4px';
+            select.style.padding = '0.4rem';
+            select.style.width = '150px';
+            
+            const clearBtn = settingsModal.querySelector('#clear-history');
+            clearBtn.style.backgroundColor = '#990000';
+            clearBtn.style.color = '#ffffff';
+            clearBtn.style.border = 'none';
+            clearBtn.style.borderRadius = '4px';
+            clearBtn.style.padding = '0.5rem 1rem';
+            clearBtn.style.cursor = 'pointer';
+            clearBtn.style.width = '100%';
+            clearBtn.style.marginTop = '0.5rem';
+            
+            closeBtn.addEventListener('click', function() {
+                settingsModal.remove();
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (!settingsModal.contains(event.target) && event.target !== gearIcon) {
+                    settingsModal.remove();
+                }
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                localStorage.removeItem('aiSearchHistory');
+                clearBtn.textContent = 'History Cleared!';
+                setTimeout(() => {
+                    clearBtn.textContent = 'Clear Search History';
+                }, 2000);
+            });
+            
+            const aiEnabled = settingsModal.querySelector('#ai-enabled');
+            const showSuggestions = settingsModal.querySelector('#show-suggestions');
+            const aiTone = settingsModal.querySelector('#ai-tone');
+            
+            if (localStorage.getItem('aiEnabled') === 'false') {
+                aiEnabled.checked = false;
+            }
+            
+            if (localStorage.getItem('showSuggestions') === 'false') {
+                showSuggestions.checked = false;
+            }
+            
+            const savedTone = localStorage.getItem('aiTone');
+            if (savedTone) {
+                aiTone.value = savedTone;
+            }
+            
+            aiEnabled.addEventListener('change', function() {
+                localStorage.setItem('aiEnabled', aiEnabled.checked);
+            });
+            
+            showSuggestions.addEventListener('change', function() {
+                localStorage.setItem('showSuggestions', showSuggestions.checked);
+            });
+            
+            aiTone.addEventListener('change', function() {
+                localStorage.setItem('aiTone', aiTone.value);
+            });
         });
+    }
+    
+    document.addEventListener('click', function(event) {
+        if (!resultsContainer.contains(event.target) && 
+            !searchBar.contains(event.target) && 
+            resultsContainer.style.display === 'block') {
+            resultsContainer.style.display = 'none';
+        }
     });
     
-    // Add CSS animation for the gear icon
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && resultsContainer.style.display === 'block') {
+            resultsContainer.style.display = 'none';
         }
-    `;
-    document.head.appendChild(styleElement);
+    });
     
-    // Initialize user interface based on settings
-    console.log('AI Search Bar initialized with settings:', savedSettings);
-});
+    function updateResponsiveness() {
+        if (window.innerWidth < 600) {
+            resultsContainer.style.width = '90%';
+            resultsContainer.style.maxWidth = 'none';
+        } else {
+            resultsContainer.style.maxWidth = '600px';
+            resultsContainer.style.width = '100%';
+        }
+    }
+    
+    updateResponsiveness();
+    window.addEventListener('resize', updateResponsiveness);
+    
+    function saveToSearchHistory(query) {
+        let searchHistory = JSON.parse(localStorage.getItem('aiSearchHistory') || '[]');
+        
+        if (!searchHistory.includes(query)) {
+            if (searchHistory.length >= 10) {
+                searchHistory.pop();
+            }
+            searchHistory.unshift(query);
+            localStorage.setItem('aiSearchHistory', JSON.stringify(searchHistory));
+        }
+    }
+    
+    function applySettings() {
+        const aiEnabled = localStorage.getItem('aiEnabled') !== 'false';
+        const tone = localStorage.getItem('aiTone') || 'friendly';
+        
+        if (!aiEnabled) {
+            resultsContainer.style.display = 'none';
+        }
+        
+        if (tone === 'professional') {
+            resultsContainer.style.backgroundColor = '#1a2631';
+            resultsContainer.style.border = '1px solid #2a3641';
+        } else if (tone === 'concise') {
+            resultsContainer.style.padding = '0.7rem';
+        }
+    }
+    
+    applySettings();
+}); // End of DOMContentLoaded event
