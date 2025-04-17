@@ -3,7 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dark UI Example</title>
+  <link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
   <style>
+    
+  /* Add this to your existing style section */
+  #avatar-crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .crop-container {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  
+  .cropper-container {
+    max-height: 70vh;
+  }
+
     body {
       margin: 0;
       background-color: #121212;
@@ -169,21 +198,7 @@
       background-color: #3a3a3a;
     }
 
-    .logout {
-      margin-top: 30px;
-    }
-    .btn-logout {
-      background-color: #c0392b;
-      color: #ffffff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .btn-logout:hover {
-      background-color: #a93226;
-    }
+    
 
     .account-section .settings-box {
       border: 1px solid #444;
@@ -255,7 +270,56 @@
     .toast.error {
       background-color: #e74c3c;
     }
-    
+    .avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#avatar-input {
+  display: none;
+}
+
+/* Modal styling */
+#avatar-crop-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.crop-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+
     /* Modal */
     .modal-overlay {
       position: fixed;
@@ -353,7 +417,22 @@
       <!-- PROFILE PAGE -->
       <section id="profile" class="active">
         <h2>Profile</h2>
-        <div class="avatar" id="user-avatar">d</div>
+        <div class="avatar" id="user-avatar" onclick="document.getElementById('avatar-input').click();">
+          <img id="avatar-img" src="default-avatar.jpg" alt="User Avatar" />
+        </div>
+        
+        <!-- Hidden file input -->
+        <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="previewAvatar(event)" />
+        
+        <!-- Modal for Preview and Crop -->
+        <div id="avatar-crop-modal" style="display: none;">
+          <div class="crop-container">
+            <img id="image-to-crop" src="" alt="Crop Avatar" />
+          </div>
+          <button onclick="cropImage()">OK</button>
+          <button onclick="closeModal()">Cancel</button>
+        </div>
+        
         <form class="profile-form" id="profileForm">
           <div class="form-group">
             <label for="fullName">Full name</label>
@@ -412,9 +491,7 @@
                     
         </form>
 
-        <div class="logout">
-          <button class="btn-logout" id="logout-btn">Log Out</button>
-        </div>
+        
       </section>
 
       <!-- ACCOUNT PAGE -->
@@ -898,7 +975,69 @@ function upvote(id) {
 }
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+<script>
+  // Simple direct avatar upload without cropping
+  function previewAvatar(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Create new image element
+        const userAvatar = document.getElementById('user-avatar');
+        
+        // Clear the avatar container
+        userAvatar.innerHTML = '';
+        
+        // Create a new image element
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = "User Avatar";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "50%";
+        
+        // Add the image to the avatar container
+        userAvatar.appendChild(img);
+        
+        // Save to local storage
+        localStorage.setItem('userAvatar', e.target.result);
+        
+        // Show success message
+        showToast('Avatar updated successfully!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
-  
+  // Load saved avatar on page load
+  function loadSavedAvatar() {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+      const userAvatar = document.getElementById('user-avatar');
+      
+      // Clear the avatar container
+      userAvatar.innerHTML = '';
+      
+      // Create a new image element
+      const img = document.createElement('img');
+      img.src = savedAvatar;
+      img.alt = "User Avatar";
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "50%";
+      
+      // Add the image to the avatar container
+      userAvatar.appendChild(img);
+    }
+  }
+
+  // Make sure this runs when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    loadSavedAvatar();
+  });
+</script>
 </body>
 </html>
