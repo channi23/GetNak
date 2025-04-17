@@ -1286,5 +1286,35 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
             });
         });
     </script>
+    <script>
+        // === SERVICES PAGE LOGIC ===
+        fetch('/FetchOrders')
+          .then(res => res.json())
+          .then(data => {
+            const container = document.querySelector('.services-list');
+            data.forEach(order => {
+              const item = document.createElement('div');
+              item.className = 'service-item';
+              item.innerHTML = `
+                <div>${order.id}</div>
+                <div class="price">$${order.price}</div>
+                <div>${order.subject}</div>
+                <div>${order.username}</div>
+                <div>${order.timeLeft}</div>
+                <div><button onclick="updateOrderStatus(${order.id})">Take</button></div>
+              `;
+              container.appendChild(item);
+            });
+          });
+      
+        function updateOrderStatus(orderId) {
+          fetch('/UpdateOrderStatusAPI', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status: 'Taken' })
+          }).then(res => res.json()).then(res => alert('Order taken!'));
+        }
+      </script>
+      
 </body>
 </html>

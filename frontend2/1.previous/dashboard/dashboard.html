@@ -1008,6 +1008,18 @@
             }
         });
     </script>
+    <script>
+        // Fetch orders for the logged-in user
+        fetch('/GetMyOrderAPI')
+          .then(res => res.json())
+          .then(data => console.log('My Orders:', data));
+      
+        // Fetch notifications
+        fetch('/NotificationAPI')
+          .then(res => res.json())
+          .then(data => console.log('Notifications:', data));
+      </script>
+      
 </body>
 </html>
             
