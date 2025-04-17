@@ -712,20 +712,31 @@
             
             // Process selected file
             function handleFiles(file) {
-                selectedFile = file;
-                
-                // Display file info
-                fileName.textContent = file.name;
-                fileSize.textContent = formatFileSize(file.size);
-                
-                // Show file preview and enable submit button
-                filePreview.style.display = 'block';
-                submitBtn.disabled = false;
-                
-                // Hide messages
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'none';
-            }
+    selectedFile = file;
+    fileName.textContent = file.name;
+    fileSize.textContent = formatFileSize(file.size);
+    filePreview.style.display = 'block';
+    submitBtn.disabled = false;
+    successMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+
+    // Preview text or image files
+    const reader = new FileReader();
+    if (file.type.startsWith("text")) {
+        reader.onload = e => {
+            document.getElementById('filePreviewContent').textContent = e.target.result.substring(0, 1000) + "...";
+        };
+        reader.readAsText(file);
+    } else if (file.type.startsWith("image")) {
+        reader.onload = e => {
+            document.getElementById('filePreviewContent').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; border-radius: 10px;" />`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('filePreviewContent').textContent = "Preview not supported for this file type.";
+    }
+}
+
             
             // Format file size
             function formatFileSize(bytes) {

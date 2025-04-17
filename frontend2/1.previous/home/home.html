@@ -107,15 +107,18 @@
   
   <!-- Link to the external JS files -->
   <script>
-    document.querySelectorAll('.dropdown-content .tile a').forEach(link => {
-      link.addEventListener('click', function (e) {
-        if (!localStorage.getItem("token")) {
-          e.preventDefault(); // Stop the normal navigation
-          window.location.href = "loginSignup/login.html"; // Redirect to login
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.dropdown-content .tile a').forEach(link => {
+        link.addEventListener('click', function (e) {
+          if (!localStorage.getItem("token")) {
+            e.preventDefault(); // Stop the normal navigation
+            window.location.href = "loginSignup/login.html"; // Redirect to login
+          }
+        });
       });
     });
   </script>
+  
   
   <script src="typing.js"></script>
   <script src="ai.js"></script>

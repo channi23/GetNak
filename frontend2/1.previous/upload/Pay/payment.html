@@ -422,14 +422,27 @@
                 });
             }
 
-            function confirmPayment(orderId) {
+            function confirmPayment(orderId, paymentId, name, email, phone) {
   fetch('/UpdateOrderStatusAPI', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ orderId, status: 'Paid' })
+    body: JSON.stringify({
+      orderId,
+      paymentId,
+      status: 'Paid',
+      name,
+      email,
+      phone
+    })
   }).then(res => res.json())
-    .then(data => alert('Payment confirmed'));
+    .then(data => {
+      console.log('Backend response:', data);
+      alert('Payment confirmed and order status updated');
+    }).catch(err => {
+      console.error('Error updating payment status:', err);
+    });
 }
+
 
             // RazorPay integration
             const payButton = document.getElementById('pay-button');
@@ -482,17 +495,21 @@
                                 description: `Payment for ${assignmentTitle}`,
                                 image: "../assets/logo.png", // Replace with your logo path
                                 handler: function(response) {
-                                    // Handle successful payment
-                                    hideLoading();
-                                    showSuccess();
-                                    
-                                    // Store payment info in localStorage
-                                    localStorage.setItem('paymentId', response.razorpay_payment_id);
-                                    localStorage.setItem('paymentStatus', 'completed');
-                                    
-                                    // In a real implementation, you would make an API call to your backend
-                                    // to verify the payment and update your database
-                                },
+  hideLoading();
+  showSuccess();
+
+  // Retrieve orderId from localStorage or another way
+  const orderId = localStorage.getItem('orderId') || 'demo-order-id';
+  
+  // Store payment info
+  localStorage.setItem('paymentId', response.razorpay_payment_id);
+  localStorage.setItem('paymentStatus', 'completed');
+  localStorage.setItem('orderId', 'ORD123456');//for testing
+
+  // Call backend to confirm payment
+  confirmPayment(orderId, response.razorpay_payment_id, name, email, phone);
+}
+,
                                 prefill: {
                                     name: name,
                                     email: email,
