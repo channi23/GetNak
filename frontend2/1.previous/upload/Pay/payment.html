@@ -422,6 +422,15 @@
                 });
             }
 
+            function confirmPayment(orderId) {
+  fetch('/UpdateOrderStatusAPI', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderId, status: 'Paid' })
+  }).then(res => res.json())
+    .then(data => alert('Payment confirmed'));
+}
+
             // RazorPay integration
             const payButton = document.getElementById('pay-button');
             

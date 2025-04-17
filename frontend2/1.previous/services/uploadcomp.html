@@ -50,28 +50,43 @@
 
     <script>
         function handleUpload(event) {
-            event.preventDefault(); // Prevent the default form submission
+  event.preventDefault();
+  const fileInput = document.getElementById('file-upload');
+  const dateInput = document.getElementById('submission-date');
+  const messageDiv = document.getElementById('message');
 
-            const fileInput = document.getElementById('file-upload');
-            const dateInput = document.getElementById('submission-date');
-            const messageDiv = document.getElementById('message');
+  if (fileInput.files.length > 0 && dateInput.value) {
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    formData.append('submissionDate', dateInput.value);
 
-            // Simulate file upload process
-            if (fileInput.files.length > 0 && dateInput.value) {
-                // Here you would typically handle the file upload to the server
-                // For demonstration, we will just show a success message
-                messageDiv.innerHTML = "File uploaded successfully! Submission Date: " + dateInput.value;
-                messageDiv.style.color = "green";
+    fetch('/OrderPlacementAPI', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        messageDiv.innerHTML = 'Order placed successfully!';
+        messageDiv.style.color = 'green';
+        setTimeout(() => {
+          window.location.href = 'services.html';
+        }, 2000);
+      });
+  } else {
+    messageDiv.innerHTML = 'Please select a file and enter a submission date.';
+    messageDiv.style.color = 'red';
+  }
+}
 
-                // Optionally, redirect back to services page after a delay
-                setTimeout(() => {
-                    window.location.href = 'services.html'; // Redirect to services page
-                }, 2000);
-            } else {
-                messageDiv.innerHTML = "Please select a file and enter a submission date.";
-                messageDiv.style.color = "red";
-            }
-        }
+        function markAsCompleted(orderId) {
+  fetch('/UpdateOrderStatusAPI', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderId, status: 'Completed' })
+  }).then(res => res.json())
+    .then(data => alert('Marked as completed'));
+}
+
 
         function redirectToHome() {
             window.location.href = '../home/home.html';

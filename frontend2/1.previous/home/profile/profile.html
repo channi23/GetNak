@@ -329,7 +329,7 @@
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <a href="#" class="back-to-spaces">&larr; Back to Spaces</a>
+      <a href="#" class="back-to-spaces" onclick="handleBack()">← Back to Spaces</a>
       <nav>
         <a id="profile-nav" onclick="showSection('profile')" class="active">Profile</a>
         <a id="account-nav" onclick="showSection('account')">Account</a>
@@ -338,8 +338,6 @@
 
     <!-- Main Content -->
     <div class="content">
-      <!-- Back Button -->
-      <button class="back-button" onclick="window.location.href='#'">⬅ Back</button>
 
       <!-- PROFILE PAGE -->
       <section id="profile" class="active">
@@ -681,5 +679,31 @@
       }, 3000);
     }
   </script>
+  <script>
+    function handleBack() {
+      if (document.referrer && document.referrer !== window.location.href) {
+        history.back();
+      } else {
+        window.location.href = '../homelogin.html'; // fallback page
+      }
+    }
+  </script>
+  <script>
+    // Fetch existing reviews
+    fetch('/FetchReviewsAPI')
+      .then(res => res.json())
+      .then(data => console.log('Reviews:', data));
+  
+    // Submit review
+    function submitReview(reviewData) {
+      fetch('/ReviewAndRatingsAPI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewData)
+      }).then(res => res.json())
+        .then(data => alert('Review submitted'));
+    }
+  </script>
+  
 </body>
 </html>
