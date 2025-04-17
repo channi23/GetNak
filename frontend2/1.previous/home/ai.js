@@ -149,6 +149,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if(lowercaseQuery==="irfan pasha"){
             return"SuperVisor and Guide for GetNak Solutions!!"
         }
+        if(lowercaseQuery==="nigga"){
+            return "https://www.youtube.com/@IShowSpeed";
+        }
+        if(lowercaseQuery==="porn"){
+            return "Aha! Aatagaadive";
+        }
         if (containsAny(lowercaseQuery, ['hello', 'hi', 'hey', 'greetings', 'howdy', 'good day'])) {
             return randomItem(knowledgeBase.greeting);
         }
