@@ -307,7 +307,18 @@
     .btn-confirm:hover {
       background-color: #a93226;
     }
-    
+    .star {
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.star.selected,
+.star:hover,
+.star:hover ~ .star {
+  color: #f1c40f;
+}
+
     /* Loading indicator */
     .loading {
       display: inline-block;
@@ -370,6 +381,35 @@
             <span class="loading" id="profile-loading"></span>
             Update Profile
           </button>
+          <div style="margin-top: 40px;">
+            <h3>Leave a Review</h3>
+            <label style="display: block; margin-bottom: 6px;">Your Rating:</label>
+            <div id="starContainer" style="margin-bottom: 10px;">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+            <textarea id="reviewText" placeholder="Write your review..." rows="4" style="width: 100%; background: #2d2d2d; color: white; border: 1px solid #444; padding: 10px; border-radius: 5px;"></textarea>
+            <br><br>
+            <button onclick="handleSubmitReview()" class="btn-primary">Submit Review</button>
+          </div>
+          <div id="reviewsSection" style="margin-top: 30px;">
+            <h3>Reviews</h3>
+            <label>Filter by Rating:</label>
+            <select id="filterRating" onchange="loadReviews()">
+              <option value="all">All</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+            <div id="reviewList" style="margin-top: 15px;"></div>
+          </div>
+        </div>          
+                    
         </form>
 
         <div class="logout">
@@ -689,21 +729,176 @@
     }
   </script>
   <script>
-    // Fetch existing reviews
-    fetch('/FetchReviewsAPI')
-      .then(res => res.json())
-      .then(data => console.log('Reviews:', data));
+    // Load reviews on page load
+    document.addEventListener('DOMContentLoaded', loadReviews);
   
-    // Submit review
-    function submitReview(reviewData) {
+    function loadReviews() {
+      fetch('/FetchReviewsAPI')
+        .then(res => res.json())
+        .then(data => {
+          const reviewList = document.getElementById('reviewList');
+          reviewList.innerHTML = '';
+  
+          if (!data || data.length === 0) {
+            reviewList.innerHTML = '<p style="color: #aaa;">No reviews yet.</p>';
+            return;
+          }
+  
+          data.forEach(review => {
+            const reviewItem = document.createElement('div');
+            reviewItem.style.padding = '10px';
+            reviewItem.style.marginBottom = '10px';
+            reviewItem.style.backgroundColor = '#1f1f1f';
+            reviewItem.style.borderRadius = '4px';
+            reviewItem.innerHTML = `<p style="margin: 0; color: #ccc;">${review.text}</p>`;
+            reviewList.appendChild(reviewItem);
+          });
+        })
+        .catch(err => {
+          console.error('Error loading reviews:', err);
+        });
+    }
+  
+    function handleSubmitReview() {
+      const reviewText = document.getElementById('reviewText').value.trim();
+      if (!reviewText) {
+        showToast("Review can't be empty!", 'error');
+        return;
+      }
+  
+      const reviewData = { text: reviewText };
+  
       fetch('/ReviewAndRatingsAPI', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reviewData)
-      }).then(res => res.json())
-        .then(data => alert('Review submitted'));
+      })
+        .then(res => res.json())
+        .then(() => {
+          showToast("Review submitted successfully!", 'success');
+          document.getElementById('reviewText').value = '';
+          loadReviews();
+        })
+        .catch(err => {
+          console.error('Error submitting review:', err);
+          showToast("Something went wrong.", 'error');
+        });
     }
   </script>
+<script>
+  let selectedRating = 0;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadReviews();
+    setupStars();
+  });
+
+  function setupStars() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.getAttribute('data-value'));
+        stars.forEach(s => s.classList.remove('selected'));
+        for (let i = 0; i < selectedRating; i++) {
+          stars[i].classList.add('selected');
+        }
+      });
+    });
+  }
+
+  function handleSubmitReview() {
+  const text = document.getElementById('reviewText').value.trim();
+  if (!text || selectedRating === 0) {
+    showToast('Please enter text and select a rating.', 'error');
+    return;
+  }
+
+  const reviewData = {
+    text: text,
+    rating: selectedRating
+  };
+
+  fetch('/ReviewAndRatingsAPI', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reviewData)
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Submission failed');
+    return res.json();
+  })
+  .then(() => {
+    document.getElementById('reviewText').value = '';
+    selectedRating = 0;
+    document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+    showToast('Review submitted!', 'success');
+    loadReviews();
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('Failed to submit review. Try again later.', 'error');
+  });
+}
+
+
+function loadReviews() {
+  const filter = document.getElementById('filterRating').value;
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+
+  fetch('/FetchReviewsAPI')
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to fetch reviews');
+      return res.json();
+    })
+    .then(data => {
+      if (filter !== 'all') {
+        data = data.filter(r => r.rating == filter);
+      }
+
+      if (!data || data.length === 0) {
+        reviewList.innerHTML = '<p style="color: #aaa;">No reviews to display.</p>';
+        return;
+      }
+
+      data.forEach(review => {
+        const div = document.createElement('div');
+        div.style.padding = '10px';
+        div.style.marginBottom = '10px';
+        div.style.backgroundColor = '#1f1f1f';
+        div.style.borderRadius = '4px';
+        div.innerHTML = `
+          <p style="margin: 0; color: #ccc;">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</p>
+          <p style="color: #aaa;">${review.text}</p>
+          <button onclick="upvote(${review.id})" class="btn-request">👍 ${review.upvotes || 0}</button>
+
+        `;
+        reviewList.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error('Error loading reviews:', err);
+      reviewList.innerHTML = '<p style="color: #aaa;">Unable to load reviews at this time.</p>';
+    });
+}
+
+
+function upvote(id) {
+  fetch('/UpvoteReviewAPI', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reviewId: id })
+  })
+  .then(res => res.json())
+  .then(() => loadReviews())
+  .catch(err => {
+    console.error('Upvote failed:', err);
+    showToast('Upvote failed. Try again later.', 'error');
+  });
+}
+
+</script>
+
   
 </body>
 </html>
