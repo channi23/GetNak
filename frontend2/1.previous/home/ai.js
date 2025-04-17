@@ -134,13 +134,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if(lowercaseQuery==="ass hole" || lowercaseQuery ==="ass"){
             return "That is you,Nigga!!";
         }
-        if(lowercaseQuery==="hariharan"||lowercaseQuery==="sri hariharan"){
+        if(lowercaseQuery==="hariharan"||lowercaseQuery==="sri hariharan"||lowercaseQuery==="who is hariharan"||lowercaseQuery==="who is the ceo"||lowercaseQuery==="who is the founder"){
             return "Sri Hari Haran is the Founder and CEO of GetNak"
         }
-        if(lowercaseQuery==="wasif"||lowercaseQuery==="wasif ahmed"){
+        if(lowercaseQuery==="wasif"||lowercaseQuery==="wasif ahmed"||lowercaseQuery==="who is wasif"){
             return "Wasif Ahmed is the CTO of GetNak"
         }
-        if(lowercaseQuery=="vamshi"){
+        if(lowercaseQuery=="vamshi"||lowercaseQuery==="who is vamhsi"){
             return "Executive Lead and CA at GetNak"
         }
         if(lowercaseQuery==="good bye"||lowercaseQuery==="bye"){
