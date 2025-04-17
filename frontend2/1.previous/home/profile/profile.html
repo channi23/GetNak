@@ -6,6 +6,33 @@
   <link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
   <style>
     
+  /* Add this to your existing style section */
+  #avatar-crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .crop-container {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  
+  .cropper-container {
+    max-height: 70vh;
+  }
+
     body {
       margin: 0;
       background-color: #121212;
@@ -947,92 +974,70 @@ function upvote(id) {
   });
 }
 
-let cropper;
-let selectedImage;
-
-// Preview selected avatar
-function previewAvatar(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const avatarImg = document.getElementById('avatar-img');
-      avatarImg.src = e.target.result;
-      showCropModal(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-// Show the crop modal and initialize Cropper.js
-function showCropModal(imageSrc) {
-  const modal = document.getElementById('avatar-crop-modal');
-  const image = document.getElementById('image-to-crop');
-  image.src = imageSrc;
-  
-  modal.style.display = 'flex';
-
-  // Initialize Cropper.js
-  cropper = new Cropper(image, {
-    aspectRatio: 1,
-    viewMode: 1,
-    scalable: true,
-    zoomable: true,
-    cropBoxResizable: true,
-    cropBoxMovable: true,
-  });
-}
-
-// Crop the image and update the avatar
-function cropImage() {
-  const canvas = cropper.getCroppedCanvas({
-    width: 150, // Resize the cropped image to 150x150 (or any size you prefer)
-    height: 150,
-  });
-  const croppedImage = canvas.toDataURL();
-
-  // Update the avatar image
-  const avatarImg = document.getElementById('avatar-img');
-  avatarImg.src = croppedImage;
-
-  // Optionally, send the cropped image to the server to update the user's profile
-  updateUserProfile(croppedImage);
-
-  // Close the modal
-  closeModal();
-}
-
-// Close the modal
-function closeModal() {
-  const modal = document.getElementById('avatar-crop-modal');
-  modal.style.display = 'none';
-  
-  // Destroy the Cropper instance
-  cropper.destroy();
-}
-
-// Send the cropped image to the server (optional)
-function updateUserProfile(croppedImage) {
-  // Example of sending to a server (you can adjust this as per your backend)
-  const formData = new FormData();
-  formData.append('avatar', croppedImage);
-
-  fetch('/update-avatar', {
-    method: 'POST',
-    body: formData,
-  }).then(response => {
-    if (response.ok) {
-      console.log('Profile updated successfully');
-    } else {
-      console.error('Error updating profile');
-    }
-  });
-}
-
-
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
-  
+<script>
+  // Simple direct avatar upload without cropping
+  function previewAvatar(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Create new image element
+        const userAvatar = document.getElementById('user-avatar');
+        
+        // Clear the avatar container
+        userAvatar.innerHTML = '';
+        
+        // Create a new image element
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = "User Avatar";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "50%";
+        
+        // Add the image to the avatar container
+        userAvatar.appendChild(img);
+        
+        // Save to local storage
+        localStorage.setItem('userAvatar', e.target.result);
+        
+        // Show success message
+        showToast('Avatar updated successfully!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Load saved avatar on page load
+  function loadSavedAvatar() {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+      const userAvatar = document.getElementById('user-avatar');
+      
+      // Clear the avatar container
+      userAvatar.innerHTML = '';
+      
+      // Create a new image element
+      const img = document.createElement('img');
+      img.src = savedAvatar;
+      img.alt = "User Avatar";
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "50%";
+      
+      // Add the image to the avatar container
+      userAvatar.appendChild(img);
+    }
+  }
+
+  // Make sure this runs when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    loadSavedAvatar();
+  });
+</script>
 </body>
 </html>
