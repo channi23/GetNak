@@ -8,80 +8,135 @@
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo" onclick="redirectToHome()">
-            <img src="../logo.png" alt="Logo">
+<header class="navbar">
+    <div class="logo" onclick="redirectToHome()">
+        <img src="../logo.png" alt="Logo">
+    </div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="../home/home.html">Home</a></li>
+            <li><a href="../upload/upload.html">Upload</a></li>
+            <li><a href="../poll/poll.html">Poll</a></li>
+            <li><a href="../about/about.html">About</a></li>
+            <li><a href="../contact/contact.html">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+</header>
+
+<main>
+    <h1>Upload Your Work</h1>
+
+    <form id="upload-form" onsubmit="handleUpload(event)">
+        <div class="input-group">
+            <label for="file-upload">Select File:</label>
+            <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt" required>
         </div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="../home/home.html">Home</a></li>
-                <li><a href="../upload/upload.html">Upload</a></li>
-                <li><a href="../poll/poll.html">Poll</a></li>
-                <li><a href="../about/about.html">About</a></li>
-                <li><a href="../contact/contact.html">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </header>
 
-    <main>
-        <h1>Upload Your Work</h1>
+        <div class="input-group">
+            <label for="submission-date">Enter Submission Date:</label>
+            <input type="date" id="submission-date" name="submission-date" required>
+        </div>
 
-        <form id="upload-form" onsubmit="handleUpload(event)">
-            <div class="input-group">
-                <label for="file-upload">Select File:</label>
-                <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt" required>
-            </div>
+        <button type="submit">Upload Work</button>
+    </form>
 
-            <div class="input-group">
-                <label for="submission-date">Enter Submission Date:</label>
-                <input type="date" id="submission-date" name="submission-date" required>
-            </div>
+    <div id="message" style="margin-top: 20px;"></div>
 
-            <button type="submit">Upload Work</button>
-        </form>
+    <!-- 📦 Orders Section -->
+    <h2 style="margin-top: 40px;">Pending Orders</h2>
+    <div id="orders-container"></div>
+</main>
 
-        <div id="message" style="margin-top: 20px;"></div>
-    </main>
+<footer>
+    <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+</footer>
 
-    <footer>
-        <p>&copy; 2025 Learning Platform. All rights reserved.</p>
-    </footer>
+<script>
+    function handleUpload(event) {
+        event.preventDefault();
+        const fileInput = document.getElementById('file-upload');
+        const dateInput = document.getElementById('submission-date');
+        const messageDiv = document.getElementById('message');
 
-    <script>
-        function handleUpload(event) {
-            event.preventDefault(); // Prevent the default form submission
+        if (fileInput.files.length > 0 && dateInput.value) {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('submissionDate', dateInput.value);
 
-            const fileInput = document.getElementById('file-upload');
-            const dateInput = document.getElementById('submission-date');
-            const messageDiv = document.getElementById('message');
+            fetch('/OrderPlacementAPI', {
+                method: 'POST',
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    messageDiv.innerHTML = 'Order placed successfully!';
+                    messageDiv.style.color = 'green';
+                    setTimeout(() => {
+                        window.location.href = 'services.html';
+                    }, 2000);
+                });
+        } else {
+            messageDiv.innerHTML = 'Please select a file and enter a submission date.';
+            messageDiv.style.color = 'red';
+        }
+    }
 
-            // Simulate file upload process
-            if (fileInput.files.length > 0 && dateInput.value) {
-                // Here you would typically handle the file upload to the server
-                // For demonstration, we will just show a success message
-                messageDiv.innerHTML = "File uploaded successfully! Submission Date: " + dateInput.value;
-                messageDiv.style.color = "green";
-
-                // Optionally, redirect back to services page after a delay
-                setTimeout(() => {
-                    window.location.href = 'services.html'; // Redirect to services page
-                }, 2000);
-            } else {
-                messageDiv.innerHTML = "Please select a file and enter a submission date.";
-                messageDiv.style.color = "red";
+    function markAsCompleted(orderId) {
+        fetch('/UpdateOrderStatusAPI', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status: 'Completed' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Marked as completed');
+            const btn = document.querySelector(`#order-${orderId} .complete-btn`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Completed';
+                btn.style.backgroundColor = 'green';
             }
-        }
+        });
+    }
 
-        function redirectToHome() {
-            window.location.href = '../home/home.html';
-        }
+    // 📦 Dynamically load and render orders
+    fetch('/GetOrdersAPI')
+        .then(res => res.json())
+        .then(orders => {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
 
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-    </script>
+            if (orders.length === 0) {
+                container.innerHTML = '<p>No pending orders.</p>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                orderDiv.id = `order-${order.id}`;
+
+                orderDiv.innerHTML = `
+                    <p><strong>Order #${order.id}</strong> - ${order.fileName || 'Untitled'} (Status: ${order.status})</p>
+                    ${order.status !== 'Completed' 
+                        ? `<button class="complete-btn" onclick="markAsCompleted(${order.id})">Mark as Completed</button>` 
+                        : `<span style="color: green;">Completed</span>`}
+                `;
+
+                container.appendChild(orderDiv);
+            });
+        });
+
+    function redirectToHome() {
+        window.location.href = '../home/home.html';
+    }
+
+    function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('active');
+    }
+</script>
 
 </body>
 </html>

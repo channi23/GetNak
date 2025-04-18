@@ -402,6 +402,27 @@
             color: #2ecc71;
         }
         
+        .spinner-container {
+    text-align: center;
+    margin-top: 15px;
+    color: var(--primary-color);
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
         /* Footer Styles */
         footer {
             background-color: var(--dark-surface);
@@ -455,8 +476,6 @@
         <a href="../upload/upload.html"><i class="upload-icon"></i> Upload</a>
         <a href="../services/services.html"><i class="tasks-icon"></i> Service</a>
         <a href="../poll/poll.html"><i class="poll-icon"></i> Community</a>
-        <a href="../aboutus.html"><i class="about-icon"></i> About us</a>
-        <a href="../contactus.html"><i class="contact-icon"></i> Support</a>
     </div>
     
     <main>
@@ -497,6 +516,11 @@
                 </div>
                 
                 <button type="button" id="proceed-payment" onclick="toPay(event)">Proceed to Payment</button>
+                <div id="loading-spinner" style="display: none;" class="spinner-container">
+                    <div class="spinner"></div>
+                    <p>Uploading and placing your order...</p>
+                  </div>
+                  
             </form>
         </section>
         
@@ -576,51 +600,76 @@
         }
         
         function toPay(event) {
-            if (event) {
-                event.preventDefault(); // Prevent form submission
-            }
-            
-            var fileInput = document.getElementById("file-upload");
-            var dateInput = document.getElementById("submission-date");
-            var titleInput = document.getElementById("assignment-title");
-            var descriptionInput = document.getElementById("assignment-description");
-            
-            var hasFile = fileInput.files.length > 0;
-            var date = dateInput.value;
-            var hasTitle = titleInput.value.trim() !== '';
-            
-            let presentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-            
-            if (!hasFile) {
-                alert("Please select a file to upload.");
-                return;
-            }
-            
-            if (!date) {
-                alert("Please select a submission date.");
-                return;
-            }
-            
-            if (date <= presentDate) {
-                alert("Please select a future submission date.");
-                return;
-            }
-            
-            if (!hasTitle) {
-                alert("Please enter an assignment title.");
-                return;
-            }
-            
-            // All validations passed, store data for payment page
-            localStorage.setItem('uploadedFileName', selectedFileName);
-            localStorage.setItem('fileType', selectedFileType);
-            localStorage.setItem('filePrice', selectedFilePrice);
-            localStorage.setItem('assignmentTitle', titleInput.value);
-            localStorage.setItem('assignmentDescription', descriptionInput.value);
-            
-            // Redirect to payment page
-            window.location.href = 'Pay/payment.html';
-        }
+    if (event) event.preventDefault();
+
+    var fileInput = document.getElementById("file-upload");
+    var dateInput = document.getElementById("submission-date");
+    var titleInput = document.getElementById("assignment-title");
+    var descriptionInput = document.getElementById("assignment-description");
+    var proceedBtn = document.getElementById("proceed-payment");
+    var spinner = document.getElementById("loading-spinner");
+
+    var hasFile = fileInput.files.length > 0;
+    var date = dateInput.value;
+    var hasTitle = titleInput.value.trim() !== '';
+    let presentDate = new Date().toISOString().split("T")[0];
+
+    if (!hasFile) {
+        alert("Please select a file to upload.");
+        return;
+    }
+
+    if (!date) {
+        alert("Please select a submission date.");
+        return;
+    }
+
+    if (date <= presentDate) {
+        alert("Please select a future submission date.");
+        return;
+    }
+
+    if (!hasTitle) {
+        alert("Please enter an assignment title.");
+        return;
+    }
+
+    // Disable button & show loading
+    proceedBtn.disabled = true;
+    proceedBtn.textContent = "Placing Order...";
+    spinner.style.display = "block";
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    formData.append('submissionDate', dateInput.value);
+
+    fetch('/OrderPlacementAPI', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Order placed successfully!");
+
+        // Store data in localStorage
+        localStorage.setItem('uploadedFileName', selectedFileName);
+        localStorage.setItem('fileType', selectedFileType);
+        localStorage.setItem('filePrice', selectedFilePrice);
+        localStorage.setItem('assignmentTitle', titleInput.value);
+        localStorage.setItem('assignmentDescription', descriptionInput.value);
+
+        // Redirect after success
+        window.location.href = 'Pay/payment.html';
+    })
+    .catch(err => {
+        console.error("Error placing order:", err);
+        alert("Failed to place order. Please try again.");
+        proceedBtn.disabled = false;
+        proceedBtn.textContent = "Proceed to Payment";
+        spinner.style.display = "none";
+    });
+}
+
         
         // Add drag and drop functionality
         const dropArea = document.querySelector('.file-upload-container');

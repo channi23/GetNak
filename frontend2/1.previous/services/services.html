@@ -663,54 +663,80 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
         }
     
         document.addEventListener('DOMContentLoaded', function() {
-            // Sample data (modified to include deadlines)
-            const servicesData = [
-                { 
-                    orderId: "ORD-2023-001", 
-                    price: "₹1,499", 
-                    subject: "Web Development", 
-                    orderBy: "John Doe",
-                    status: "available",
-                    timeLeft: 72.5, // hours
-                    description: "Looking for someone to develop a responsive WordPress e-commerce website with custom theme integration. The site should have product catalog, shopping cart, and payment gateway integration. Mobile-friendly design is a must."
-                },
-                { 
-                    orderId: "ORD-2023-002", 
-                    price: "₹2,999", 
-                    subject: "Logo Design", 
-                    orderBy: "Jane Smith",
-                    status: "available",
-                    timeLeft: 48.0, // hours
-                    description: "Need a professional, modern logo design for a new fitness brand. Looking for something clean, memorable and versatile that works across digital and print mediums. Vector format required with multiple color variations."
-                },
-                { 
-                    orderId: "ORD-2023-003", 
-                    price: "₹899", 
-                    subject: "Content Writing", 
-                    orderBy: "Alex Johnson",
-                    status: "taken",
-                    timeLeft: 12.5, // hours
-                    description: "Seeking a content writer for 5 SEO-optimized blog posts for a marketing website. Each article should be 1500-2000 words and include relevant keywords. Topics focus on digital marketing strategies and social media optimization."
-                },
-                { 
-                    orderId: "ORD-2023-004", 
-                    price: "₹4,999", 
-                    subject: "Mobile App Development", 
-                    orderBy: "Michael Brown",
-                    status: "available",
-                    timeLeft: 120.0, // hours
-                    description: "Looking for an experienced developer to create a cross-platform mobile app using Flutter. The app is a fitness tracker with features including workout planning, progress tracking, and social sharing capabilities. Both Android and iOS versions required."
-                },
-                { 
-                    orderId: "ORD-2023-005", 
-                    price: "₹1,299", 
-                    subject: "Digital Marketing", 
-                    orderBy: "Emily Davis",
-                    status: "available",
-                    timeLeft: 6.25, // hours
-                    description: "Need a comprehensive digital marketing campaign for a new restaurant. Services should include social media management, Google Ads setup and management, and performance analytics. Campaign duration: 3 months with regular reporting."
-                }
-            ];
+            fetch('/FetchOrders')
+  .then(res => res.json())
+  .then(servicesData => {
+    generateServiceItems(servicesData);
+  })
+  .catch(err => {
+    console.error("Failed to fetch services:", err);
+  });
+
+function generateServiceItems(servicesData) {
+  const servicesList = document.querySelector('.services-list');
+  const serviceHeader = servicesList.querySelector('.service-header');
+
+  // Clear all except header
+  servicesList.innerHTML = '';
+  servicesList.appendChild(serviceHeader);
+
+  servicesData.forEach((service, index) => {
+    const serviceItem = document.createElement('div');
+    serviceItem.className = 'service-item';
+
+    const isUrgent = service.timeLeft < 24 ? 'urgent' : '';
+    const takeButtonHTML = service.status === 'available'
+      ? `<button class="take-order-btn" data-order-id="${service.orderId}">Take Order</button>`
+      : `<button class="take-order-btn taken" disabled>Taken</button>`;
+
+    serviceItem.innerHTML = `
+      <div class="order-id" data-label="Order ID:">${service.orderId}</div>
+      <div class="price" data-label="Price:">${service.price}</div>
+      <div class="subject" data-label="Subject:">${service.subject}</div>
+      <div class="order-by" data-label="Order By:">${service.orderBy}</div>
+      <div class="countdown ${isUrgent}" data-label="Time Left:" data-time-left="${service.timeLeft}">
+        <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        ${formatTimeLeft(service.timeLeft)}
+      </div>
+      <div class="take-order-wrapper" data-label="Action:">
+        ${takeButtonHTML}
+      </div>
+      <div class="service-description-container">
+        <div class="description-title">Description</div>
+        <p>${service.description}</p>
+      </div>
+    `;
+
+    servicesList.appendChild(serviceItem);
+
+    // Animate each service item
+    gsap.to(serviceItem, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      delay: 0.6 + (index * 0.1)
+    });
+
+    // Expand/collapse description
+    serviceItem.addEventListener('click', function (e) {
+      if (e.target.closest('.take-order-btn')) return;
+      this.classList.toggle('expanded');
+      const descContainer = this.querySelector('.service-description-container');
+      gsap.to(descContainer, {
+        maxHeight: this.classList.contains('expanded') ? 300 : 0,
+        opacity: this.classList.contains('expanded') ? 1 : 0,
+        marginTop: this.classList.contains('expanded') ? 15 : 0,
+        duration: 0.3
+      });
+    });
+  });
+
+  setupTakeOrderListeners(); // Make sure this function exists for button logic
+}
+
             
             // Animation on page load
             gsap.to('.services-container', {
@@ -1286,5 +1312,35 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
             });
         });
     </script>
+    <script>
+        // === SERVICES PAGE LOGIC ===
+        fetch('/FetchOrders')
+          .then(res => res.json())
+          .then(data => {
+            const container = document.querySelector('.services-list');
+            data.forEach(order => {
+              const item = document.createElement('div');
+              item.className = 'service-item';
+              item.innerHTML = `
+                <div>${order.id}</div>
+                <div class="price">$${order.price}</div>
+                <div>${order.subject}</div>
+                <div>${order.username}</div>
+                <div>${order.timeLeft}</div>
+                <div><button onclick="updateOrderStatus(${order.id})">Take</button></div>
+              `;
+              container.appendChild(item);
+            });
+          });
+      
+        function updateOrderStatus(orderId) {
+          fetch('/UpdateOrderStatusAPI', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status: 'Taken' })
+          }).then(res => res.json()).then(res => alert('Order taken!'));
+        }
+      </script>
+      
 </body>
 </html>

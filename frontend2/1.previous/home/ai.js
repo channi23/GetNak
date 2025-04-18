@@ -40,10 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced AI response knowledge base
     const knowledgeBase = {
         greeting: [
+            "FUCK YOU !!!",
             "Hello! How can I help you today?", 
             "Hi there! Looking for freelance services?", 
             "Welcome to GetNak! How can I assist you?",
             "Hey! Ready to find the perfect freelancer for your project?"
+            
         ],
         services: {
             general: "GetNak offers a wide range of freelance services including web development, graphic design, writing, marketing, and more. Would you like to browse a specific category?",
@@ -126,6 +128,33 @@ document.addEventListener('DOMContentLoaded', function() {
     function getAIResponse(query) {
         const lowercaseQuery = query.toLowerCase();
         
+        if (lowercaseQuery === "fuck you" || lowercaseQuery === "fuck u"||lowercaseQuery==="fuck") {
+            return "FUCK YOU TOO!!!";
+        }
+        if(lowercaseQuery==="ass hole" || lowercaseQuery ==="ass"){
+            return "That is you,Nigga!!";
+        }
+        if(lowercaseQuery==="hariharan"||lowercaseQuery==="sri hariharan"||lowercaseQuery==="who is hariharan"||lowercaseQuery==="who is the ceo"||lowercaseQuery==="who is the founder"){
+            return "Sri Hari Haran is the Founder and CEO of GetNak"
+        }
+        if(lowercaseQuery==="wasif"||lowercaseQuery==="wasif ahmed"||lowercaseQuery==="who is wasif"){
+            return "Wasif Ahmed is the CTO of GetNak"
+        }
+        if(lowercaseQuery=="vamshi"||lowercaseQuery==="who is vamhsi"){
+            return "Executive Lead and CA at GetNak"
+        }
+        if(lowercaseQuery==="good bye"||lowercaseQuery==="bye"){
+            return "FuckOff,this site is better without you!!"
+        }
+        if(lowercaseQuery==="irfan pasha"){
+            return"SuperVisor and Guide for GetNak Solutions!!"
+        }
+        if(lowercaseQuery==="nigga"){
+            return "https://www.youtube.com/@IShowSpeed";
+        }
+        if(lowercaseQuery==="porn"){
+            return "Aha! Aatagaadive";
+        }
         if (containsAny(lowercaseQuery, ['hello', 'hi', 'hey', 'greetings', 'howdy', 'good day'])) {
             return randomItem(knowledgeBase.greeting);
         }
