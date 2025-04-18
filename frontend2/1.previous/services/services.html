@@ -5,422 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Services Listing</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
-            min-height: 100vh;
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow-x: hidden;
-            padding: 40px 20px;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backdrop-filter: blur(120px);
-            z-index: -1;
-        }
-
-        /* Hamburger Menu Styles */
-        .hamburger-menu {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            cursor: pointer;
-            width: 30px;
-            height: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .hamburger-line {
-            width: 100%;
-            height: 3px;
-            background-color: #e0e0e0;
-            transition: all 0.3s ease;
-        }
-
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: -250px; /* Hidden by default */
-            width: 250px;
-            height: 100vh;
-            background-color: rgba(30, 30, 30, 0.95);
-            transition: left 0.3s ease;
-            z-index: 999;
-            padding-top: 80px;
-        }
-
-        .side-menu.open {
-            left: 0; /* Show when open */
-        }
-
-        .side-menu-item {
-            color: #e0e0e0;
-            text-decoration: none;
-            display: block;
-            padding: 15px 20px;
-            border-bottom: 1px solid #333;
-            transition: background-color 0.3s ease;
-        }
-
-        .side-menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .services-container {
-            background-color: rgba(30, 30, 30, 0.85);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 1000px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transform: translateY(20px);
-            color: #e0e0e0;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            opacity: 0;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            color: #ffffff;
-        }
-
-        .search-filter {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            opacity: 0;
-        }
-
-        .search-bar {
-            flex: 1;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background-color: #2a2a2a;
-            color: #e0e0e0;
-        }
-
-        .search-bar input:focus {
-            border-color: #666;
-            outline: none;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-        }
-
-        .filter-dropdown {
-            position: relative;
-        }
-
-        .filter-btn {
-            padding: 12px 20px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background: #2a2a2a;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            color: #e0e0e0;
-        }
-
-        .filter-btn:hover {
-            border-color: #666;
-        }
-
-        .services-list {
-            opacity: 0;
-        }
-
-        .service-header {
-            display: grid;
-            grid-template-columns: 0.7fr 1fr 1fr 0.8fr 1fr 0.8fr;
-            padding: 0 20px 15px 20px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 15px;
-            font-weight: 500;
-            color: #999;
-        }
-
-        .service-item {
-            background-color: #2a2a2a;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(10px);
-            display: grid;
-            grid-template-columns: 0.7fr 1fr 1fr 0.8fr 1fr 0.8fr;
-            align-items: center;
-            gap: 15px;
-            border: 1px solid #333;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .service-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            border-color: #666;
-        }
-
-        .order-id {
-            font-weight: 500;
-            color: #999;
-        }
-
-        .price {
-            font-weight: bold;
-            font-size: 18px;
-            color: #4db8ff;
-        }
-
-        .subject {
-            font-weight: 500;
-            color: #e0e0e0;
-        }
-
-        .order-by {
-            color: #999;
-        }
-
-        .countdown {
-            color: #ff9f4d;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .countdown.urgent {
-            color: #ff6b6b;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-
-        .take-order-btn {
-            background-color: #4db8ff;
-            color: #1a1a1a;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .take-order-btn:hover {
-            background-color: #66c2ff;
-            transform: translateY(-2px);
-        }
-
-        .take-order-btn.taken {
-            background-color: #2b733a;
-            cursor: default;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-            gap: 10px;
-            opacity: 0;
-        }
-
-        .page-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background: #2a2a2a;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #e0e0e0;
-        }
-
-        .page-btn:hover, .page-btn.active {
-            border-color: #4db8ff;
-            background-color: #4db8ff;
-            color: #1a1a1a;
-        }
-
-        .create-service-btn {
-            background-color: #4db8ff;
-            color: #1a1a1a;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .create-service-btn:hover {
-            background-color: #66c2ff;
-            transform: translateY(-3px);
-        }
-
-        .tooltip {
-            position: fixed;
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Enhanced Description Styling */
-        .service-description-container {
-            grid-column: 1 / -1;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            margin-top: 0;
-            border-top: 0px solid transparent;
-            padding: 0 15px;
-        }
-
-        .service-item.expanded .service-description-container {
-            max-height: 300px;
-            opacity: 1;
-            margin-top: 15px;
-            border-top: 1px solid #444;
-            padding: 15px;
-        }
-
-        .description-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #4db8ff;
-        }
-
-        .clock-icon {
-            color: #ff9f4d;
-        }
-
-        @media (max-width: 900px) {
-            .services-container {
-                padding: 30px 20px;
-            }
-            
-            .service-item, .service-header {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .service-header {
-                display: none;
-            }
-            
-            .service-item {
-                position: relative;
-                padding-top: 40px;
-                padding-bottom: 30px;
-            }
-            
-            .order-id {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                font-size: 12px;
-            }
-            
-            .service-item > div:not(.take-order-wrapper):not(.service-description-container) {
-                position: relative;
-                padding-left: 100px;
-                min-height: 30px;
-                display: flex;
-                align-items: center;
-            }
-            
-            .service-item > div:not(.take-order-wrapper):not(.service-description-container)::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 90px;
-                font-weight: 500;
-                color: #777;
-            }
-            
-            .take-order-wrapper {
-                position: absolute;
-                bottom: 15px;
-                right: 15px;
-            }
-            
-            .search-filter {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="services.css">
 </head>
 <body>
     <!-- Hamburger Menu -->
-    <div class="hamburger-menu" onclick="toggleMenu()">
+    <div class="hamburger-menu">
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
@@ -477,8 +66,6 @@
                 <div>Time Left</div>
                 <div>Action</div>
             </div>
-            
-            <!-- Service items will be dynamically added here -->
         </div>
         
         <div class="pagination">
@@ -494,45 +81,71 @@
     </div>
 
     <script>
+        // Mock data for testing
+        const mockServicesData = [
+            {
+                orderId: "ORD001",
+                price: "$100",
+                subject: "Web Development",
+                orderBy: "John Doe",
+                timeLeft: 48,
+                status: "available",
+                description: "Create a responsive website with HTML, CSS, and JavaScript."
+            },
+            {
+                orderId: "ORD002",
+                price: "$150",
+                subject: "Graphic Design",
+                orderBy: "Jane Smith",
+                timeLeft: 12,
+                status: "available",
+                description: "Design a logo and branding materials for a startup."
+            },
+            {
+                orderId: "ORD003",
+                price: "$80",
+                subject: "Content Writing",
+                orderBy: "Alice Johnson",
+                timeLeft: 72,
+                status: "taken",
+                description: "Write a 1000-word article on technology trends."
+            }
+        ];
+
         // Hamburger Menu Toggle Function
-        
-    
-       // Hamburger Menu Toggle Function
-function toggleMenu() {
-    const sideMenu = document.querySelector('.side-menu');
-    const hamburgerLines = document.querySelectorAll('.hamburger-line');
-    
-    sideMenu.classList.toggle('open');
-    
-    // Animate hamburger lines
-    hamburgerLines[0].style.transform = sideMenu.classList.contains('open') 
-        ? 'rotate(45deg) translate(5px, 5px)' 
-        : 'rotate(0) translate(0)';
-    
-    hamburgerLines[1].style.opacity = sideMenu.classList.contains('open') 
-        ? '0' 
-        : '1';
-    
-    hamburgerLines[2].style.transform = sideMenu.classList.contains('open') 
-        ? 'rotate(-45deg) translate(5px, -5px)' 
-        : 'rotate(0) translate(0)';
-}
+        function toggleMenu() {
+            const sideMenu = document.querySelector('.side-menu');
+            const hamburgerLines = document.querySelectorAll('.hamburger-line');
+            
+            sideMenu.classList.toggle('open');
+            
+            hamburgerLines[0].style.transform = sideMenu.classList.contains('open') 
+                ? 'rotate(45deg) translate(5px, 5px)' 
+                : 'rotate(0) translate(0)';
+            hamburgerLines[1].style.opacity = sideMenu.classList.contains('open') 
+                ? '0' 
+                : '1';
+            hamburgerLines[2].style.transform = sideMenu.classList.contains('open') 
+                ? 'rotate(-45deg) translate(5px, -5px)' 
+                : 'rotate(0) translate(0)';
+        }
 
-// Close side menu when clicking outside
-document.addEventListener('click', (e) => {
-    const sideMenu = document.querySelector('.side-menu');
-    if (sideMenu.classList.contains('open') && 
-        !e.target.closest('.side-menu') && 
-        !e.target.closest('.hamburger-menu')) {
-        toggleMenu();
-    }
-});
+        // Close side menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const sideMenu = document.querySelector('.side-menu');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            if (sideMenu.classList.contains('open') && 
+                !e.target.closest('.side-menu') && 
+                !e.target.closest('.hamburger-menu')) {
+                toggleMenu();
+            }
+        });
 
-// Hamburger menu click event
-document.querySelector('.hamburger-menu').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent the click from triggering the document click listener
-    toggleMenu();
-});
+        // Hamburger menu click event
+        document.querySelector('.hamburger-menu').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMenu();
+        });
 
         // Format time for countdown display
         function formatTimeLeft(totalHours) {
@@ -541,24 +154,18 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
             const minutes = Math.floor((totalHours * 60) % 60);
             
             let timeString = '';
-            if (days > 0) {
-                timeString += `${days}d `;
-            }
-            if (hours > 0 || days > 0) {
-                timeString += `${hours}h `;
-            }
+            if (days > 0) timeString += `${days}d `;
+            if (hours > 0 || days > 0) timeString += `${hours}h `;
             timeString += `${minutes}m`;
             
             return timeString;
         }
-        
+
         // Update all countdowns
         function updateCountdowns() {
             const countdownElements = document.querySelectorAll('.countdown');
-            
             countdownElements.forEach(element => {
-                let timeLeft = parseFloat(element.getAttribute('data-time-left')) - (1/60); // Subtract 1 minute
-                
+                let timeLeft = parseFloat(element.getAttribute('data-time-left')) - (1/60);
                 if (timeLeft <= 0) {
                     timeLeft = 0;
                     element.textContent = "Expired!";
@@ -566,20 +173,14 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
                 } else {
                     element.setAttribute('data-time-left', timeLeft);
                     element.textContent = formatTimeLeft(timeLeft);
-                    
-                    // Add urgent class if less than 24 hours left
-                    if (timeLeft < 24) {
-                        element.classList.add('urgent');
-                    } else {
-                        element.classList.remove('urgent');
-                    }
+                    if (timeLeft < 24) element.classList.add('urgent');
+                    else element.classList.remove('urgent');
                 }
             });
         }
-    
-        // Add this function to simulate file download
+
+        // Simulate file download
         function simulateDownload(orderId) {
-            // Create a downloading notification
             const downloadNotification = document.createElement('div');
             downloadNotification.className = 'download-notification';
             downloadNotification.style.position = 'fixed';
@@ -595,7 +196,6 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
             downloadNotification.style.alignItems = 'center';
             downloadNotification.style.gap = '10px';
             
-            // Add loading spinner
             downloadNotification.innerHTML = `
                 <div class="download-spinner" style="width: 20px; height: 20px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #4db8ff; animation: spin 1s linear infinite;"></div>
                 <div>
@@ -604,26 +204,14 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
                 </div>
             `;
             
-            // Add CSS animation for spinner
             const style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
-            `;
+            style.innerHTML = `@keyframes spin { to { transform: rotate(360deg); } }`;
             document.head.appendChild(style);
             
-            // Add notification to document
             document.body.appendChild(downloadNotification);
             
-            // Animate in
-            gsap.from(downloadNotification, {
-                opacity: 0,
-                y: 20,
-                duration: 0.3
-            });
+            gsap.from(downloadNotification, { opacity: 0, y: 20, duration: 0.3 });
             
-            // Simulate download completion after 3 seconds
             setTimeout(() => {
                 downloadNotification.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4db8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -636,20 +224,15 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
                     </div>
                 `;
                 
-                // Remove notification after 2 more seconds
                 setTimeout(() => {
                     gsap.to(downloadNotification, {
                         opacity: 0,
                         y: 20,
                         duration: 0.3,
-                        onComplete: () => {
-                            document.body.removeChild(downloadNotification);
-                        }
+                        onComplete: () => document.body.removeChild(downloadNotification)
                     });
                 }, 2000);
                 
-                // In a real application, this is where you would actually trigger the file download
-                // For demo purposes, we'll create a fake file download
                 const fileName = `Order_${orderId}_Files.zip`;
                 const dummyLink = document.createElement('a');
                 dummyLink.setAttribute('href', 'data:application/zip;charset=utf-8,' + encodeURIComponent('This is a placeholder for order files'));
@@ -658,144 +241,24 @@ document.querySelector('.hamburger-menu').addEventListener('click', function(e) 
                 document.body.appendChild(dummyLink);
                 dummyLink.click();
                 document.body.removeChild(dummyLink);
-                
             }, 3000);
         }
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('/FetchOrders')
-  .then(res => res.json())
-  .then(servicesData => {
-    generateServiceItems(servicesData);
-  })
-  .catch(err => {
-    console.error("Failed to fetch services:", err);
-  });
 
-function generateServiceItems(servicesData) {
-  const servicesList = document.querySelector('.services-list');
-  const serviceHeader = servicesList.querySelector('.service-header');
-
-  // Clear all except header
-  servicesList.innerHTML = '';
-  servicesList.appendChild(serviceHeader);
-
-  servicesData.forEach((service, index) => {
-    const serviceItem = document.createElement('div');
-    serviceItem.className = 'service-item';
-
-    const isUrgent = service.timeLeft < 24 ? 'urgent' : '';
-    const takeButtonHTML = service.status === 'available'
-      ? `<button class="take-order-btn" data-order-id="${service.orderId}">Take Order</button>`
-      : `<button class="take-order-btn taken" disabled>Taken</button>`;
-
-    serviceItem.innerHTML = `
-      <div class="order-id" data-label="Order ID:">${service.orderId}</div>
-      <div class="price" data-label="Price:">${service.price}</div>
-      <div class="subject" data-label="Subject:">${service.subject}</div>
-      <div class="order-by" data-label="Order By:">${service.orderBy}</div>
-      <div class="countdown ${isUrgent}" data-label="Time Left:" data-time-left="${service.timeLeft}">
-        <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        ${formatTimeLeft(service.timeLeft)}
-      </div>
-      <div class="take-order-wrapper" data-label="Action:">
-        ${takeButtonHTML}
-      </div>
-      <div class="service-description-container">
-        <div class="description-title">Description</div>
-        <p>${service.description}</p>
-      </div>
-    `;
-
-    servicesList.appendChild(serviceItem);
-
-    // Animate each service item
-    gsap.to(serviceItem, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-      delay: 0.6 + (index * 0.1)
-    });
-
-    // Expand/collapse description
-    serviceItem.addEventListener('click', function (e) {
-      if (e.target.closest('.take-order-btn')) return;
-      this.classList.toggle('expanded');
-      const descContainer = this.querySelector('.service-description-container');
-      gsap.to(descContainer, {
-        maxHeight: this.classList.contains('expanded') ? 300 : 0,
-        opacity: this.classList.contains('expanded') ? 1 : 0,
-        marginTop: this.classList.contains('expanded') ? 15 : 0,
-        duration: 0.3
-      });
-    });
-  });
-
-  setupTakeOrderListeners(); // Make sure this function exists for button logic
-}
-
-            
-            // Animation on page load
-            gsap.to('.services-container', {
-                opacity: 1, 
-                y: 0, 
-                duration: 0.8, 
-                ease: 'power2.out'
-            });
-            
-            gsap.to('.header', {
-                opacity: 1,
-                duration: 0.5,
-                delay: 0.3
-            });
-            
-            gsap.to('.search-filter', {
-                opacity: 1,
-                duration: 0.5,
-                delay: 0.4
-            });
-            
-            gsap.to('.services-list', {
-                opacity: 1,
-                duration: 0.5,
-                delay: 0.5
-            });
-            
-            gsap.to('.pagination', {
-                opacity: 1,
-                duration: 0.5,
-                delay: 0.6
-            });
-            
-            // Generate service items
+        // Generate service items
+        function generateServiceItems(servicesData) {
             const servicesList = document.querySelector('.services-list');
-            
+            const serviceHeader = servicesList.querySelector('.service-header');
+            servicesList.innerHTML = '';
+            servicesList.appendChild(serviceHeader);
+
             servicesData.forEach((service, index) => {
                 const serviceItem = document.createElement('div');
                 serviceItem.className = 'service-item';
-                
-                const takeButtonHTML = service.status === 'available' 
-                    ? `<button class="take-order-btn" data-order-id="${service.orderId}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 11 12 14 22 4"></polyline>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                        Take Order
-                      </button>`
-                    : `<button class="take-order-btn taken" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-                            <path d="m9 12 2 2 4-4"></path>
-                        </svg>
-                        Taken
-                      </button>`;
-                
-                // Determine urgency class for countdown
                 const isUrgent = service.timeLeft < 24 ? 'urgent' : '';
-                
+                const takeButtonHTML = service.status === 'available'
+                    ? `<button class="take-order-btn" data-order-id="${service.orderId}">Take Order</button>`
+                    : `<button class="take-order-btn taken" disabled>Taken</button>`;
+
                 serviceItem.innerHTML = `
                     <div class="order-id" data-label="Order ID:">${service.orderId}</div>
                     <div class="price" data-label="Price:">${service.price}</div>
@@ -808,65 +271,41 @@ function generateServiceItems(servicesData) {
                         </svg>
                         ${formatTimeLeft(service.timeLeft)}
                     </div>
-                    <div class="take-order-wrapper" data-label="Action:">
-                        ${takeButtonHTML}
-                    </div>
+                    <div class="take-order-wrapper" data-label="Action:">${takeButtonHTML}</div>
                     <div class="service-description-container">
                         <div class="description-title">Description</div>
                         <p>${service.description}</p>
                     </div>
                 `;
-                
+
                 servicesList.appendChild(serviceItem);
-                
-                // Animate each service item
-                gsap.to(serviceItem, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.5,
-                    delay: 0.6 + (index * 0.1)
-                });
-                
-                // Add click event for expanded description
+
+                gsap.to(serviceItem, { opacity: 1, y: 0, duration: 0.5, delay: 0.6 + (index * 0.1) });
+
                 serviceItem.addEventListener('click', function(e) {
-                    // Don't toggle if clicking the take order button
-                    if (e.target.closest('.take-order-btn')) {
-                        return;
-                    }
-                    
+                    if (e.target.closest('.take-order-btn')) return;
                     this.classList.toggle('expanded');
-                    
-                    // Animate expansion
                     const descContainer = this.querySelector('.service-description-container');
-                    if (this.classList.contains('expanded')) {
-                        gsap.to(descContainer, {
-                            maxHeight: 300,
-                            opacity: 1,
-                            marginTop: 15,
-                            duration: 0.3
-                        });
-                    } else {
-                        gsap.to(descContainer, {
-                            maxHeight: 0,
-                            opacity: 0,
-                            marginTop: 0,
-                            duration: 0.3
-                        });
-                    }
+                    gsap.to(descContainer, {
+                        maxHeight: this.classList.contains('expanded') ? 300 : 0,
+                        opacity: this.classList.contains('expanded') ? 1 : 0,
+                        marginTop: this.classList.contains('expanded') ? 15 : 0,
+                        duration: 0.3
+                    });
                 });
             });
 
-            // Take order button functionality
-            const takeOrderButtons = document.querySelectorAll('.take-order-btn:not(.taken)');
+            setupTakeOrderListeners();
+        }
 
+        // Setup take order button listeners
+        function setupTakeOrderListeners() {
+            const takeOrderButtons = document.querySelectorAll('.take-order-btn:not(.taken)');
             takeOrderButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    // Prevent the event from triggering parent elements
                     e.stopPropagation();
-                    
                     const orderId = this.getAttribute('data-order-id');
                     
-                    // Create custom confirmation dialog
                     const confirmationDialog = document.createElement('div');
                     confirmationDialog.className = 'confirmation-dialog';
                     confirmationDialog.style.position = 'fixed';
@@ -891,7 +330,6 @@ function generateServiceItems(servicesData) {
                         </div>
                     `;
                     
-                    // Create overlay
                     const overlay = document.createElement('div');
                     overlay.style.position = 'fixed';
                     overlay.style.top = '0';
@@ -901,23 +339,15 @@ function generateServiceItems(servicesData) {
                     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
                     overlay.style.zIndex = '1999';
                     
-                    // Add to document
                     document.body.appendChild(overlay);
                     document.body.appendChild(confirmationDialog);
                     
-                    // Animation for dialog
-                    gsap.from(confirmationDialog, {
-                        opacity: 0,
-                        y: -20,
-                        duration: 0.3
-                    });
+                    gsap.from(confirmationDialog, { opacity: 0, y: -20, duration: 0.3 });
                     
-                    // Attach event listeners
                     const cancelBtn = confirmationDialog.querySelector('.cancel-btn');
                     const downloadNoBtn = confirmationDialog.querySelector('.download-no-btn');
                     const downloadYesBtn = confirmationDialog.querySelector('.download-yes-btn');
                     
-                    // Cancel button
                     cancelBtn.addEventListener('click', () => {
                         gsap.to(confirmationDialog, {
                             opacity: 0,
@@ -930,9 +360,7 @@ function generateServiceItems(servicesData) {
                         });
                     });
                     
-                    // Function to handle taking the order
                     const takeOrder = () => {
-                        // Change button to "Taken" state
                         this.innerHTML = `
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
@@ -943,35 +371,23 @@ function generateServiceItems(servicesData) {
                         this.classList.add('taken');
                         this.disabled = true;
                         
-                        // Show confirmation tooltip
                         const tooltip = document.getElementById('tooltip');
                         tooltip.textContent = `You have taken order ${orderId}`;
                         tooltip.style.opacity = '1';
                         tooltip.style.top = (this.getBoundingClientRect().top - 40) + 'px';
                         tooltip.style.left = (this.getBoundingClientRect().left + (this.offsetWidth / 2) - (tooltip.offsetWidth / 2)) + 'px';
                         
-                        // Hide tooltip after 3 seconds
                         setTimeout(() => {
-                            gsap.to(tooltip, {
-                                opacity: 0,
-                                duration: 0.3
-                            });
+                            gsap.to(tooltip, { opacity: 0, duration: 0.3 });
                         }, 3000);
                     };
                     
-                    // Just take order, no download
                     downloadNoBtn.addEventListener('click', () => {
-                        // Button click animation
                         gsap.to(this, {
                             scale: 0.9,
                             duration: 0.1,
                             onComplete: () => {
-                                gsap.to(this, {
-                                    scale: 1,
-                                    duration: 0.1
-                                });
-                                
-                                // Close the dialog
+                                gsap.to(this, { scale: 1, duration: 0.1 });
                                 gsap.to(confirmationDialog, {
                                     opacity: 0,
                                     y: -20,
@@ -979,98 +395,93 @@ function generateServiceItems(servicesData) {
                                     onComplete: () => {
                                         document.body.removeChild(confirmationDialog);
                                         document.body.removeChild(overlay);
-                                        
-                                        // Take the order
                                         takeOrder();
                                     }
                                 });
                             }
                         });
-                        
-                        // In a real application, you would send an API request here to update the order status
                         console.log(`Order ${orderId} has been taken without downloading files`);
                     });
                     
-                    // Take order and download files
                     downloadYesBtn.addEventListener('click', () => {
-                        // Button click animation
                         gsap.to(this, {
                             scale: 0.9,
                             duration: 0.1,
                             onComplete: () => {
-                                gsap.to(this, {
-                                    scale: 1,
-                                    duration: 0.1
-                                });
-                                
-                                // Close the dialog
+                                gsap.to(this, { scale: 1, duration: 0.1 });
                                 gsap.to(confirmationDialog, {
                                     opacity: 0,
                                     y: -20,
                                     duration: 0.3,
                                     onComplete: () => {
- document.body.removeChild(confirmationDialog);
+                                        document.body.removeChild(confirmationDialog);
                                         document.body.removeChild(overlay);
-                                        
-                                        // Take the order
                                         takeOrder();
-                                        
-                                        // Simulate file download
                                         simulateDownload(orderId);
                                     }
                                 });
                             }
                         });
-                        
-                        // In a real application, you would send an API request here to update the order status
                         console.log(`Order ${orderId} has been taken with file download`);
                     });
                 });
             });
-            
-            // Search functionality
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attempt to fetch services, fallback to mock data if failed
+            fetch('/FetchOrders')
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+                    return res.json();
+                })
+                .then(servicesData => generateServiceItems(servicesData))
+                .catch(err => {
+                    console.error("Failed to fetch services:", err);
+                    // Display error message to user
+                    const servicesList = document.querySelector('.services-list');
+                    const errorMessage = document.createElement('div');
+                    errorMessage.style.color = '#ff6b6b';
+                    errorMessage.style.textAlign = 'center';
+                    errorMessage.style.padding = '20px';
+                    errorMessage.textContent = 'Failed to load services. Using sample data.';
+                    servicesList.appendChild(errorMessage);
+                    // Use mock data as fallback
+                    generateServiceItems(mockServicesData);
+                });
+
+            gsap.to('.services-container', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+            gsap.to('.header', { opacity: 1, duration: 0.5, delay: 0.3 });
+            gsap.to('.search-filter', { opacity: 1, duration: 0.5, delay: 0.4 });
+            gsap.to('.services-list', { opacity: 1, duration: 0.5, delay: 0.5 });
+            gsap.to('.pagination', { opacity: 1, duration: 0.5, delay: 0.6 });
+
             const searchInput = document.querySelector('.search-bar input');
-            
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 const serviceItems = document.querySelectorAll('.service-item');
-                
                 serviceItems.forEach(item => {
                     const text = item.textContent.toLowerCase();
                     if (text.includes(searchTerm)) {
-                        gsap.to(item, {
-                            opacity: 1,
-                            height: 'auto',
-                            duration: 0.3,
-                            display: 'grid'
-                        });
+                        gsap.to(item, { opacity: 1, height: 'auto', duration: 0.3, display: 'grid' });
                     } else {
                         gsap.to(item, {
                             opacity: 0,
                             height: 0,
                             duration: 0.3,
-                            onComplete: () => {
-                                item.style.display = 'none';
-                            }
+                            onComplete: () => item.style.display = 'none'
                         });
                     }
                 });
             });
-            
-            // Filter dropdown functionality
+
             const filterBtn = document.querySelector('.filter-btn');
-            const servicesItems = document.querySelectorAll('.service-item');
-    
-            // Create filter dropdown menu
-            const createFilterDropdown = () => {
-                // Remove existing dropdown if it exists
+            filterBtn.addEventListener('click', createFilterDropdown);
+
+            function createFilterDropdown() {
                 const existingDropdown = document.querySelector('.filter-dropdown-menu');
-                if (existingDropdown) {
-                    existingDropdown.remove();
-                    return;
-                }
+                if (existingDropdown) return existingDropdown.remove();
                 
-                // Create dropdown element
                 const dropdownMenu = document.createElement('div');
                 dropdownMenu.className = 'filter-dropdown-menu';
                 dropdownMenu.style.position = 'absolute';
@@ -1084,7 +495,6 @@ function generateServiceItems(servicesData) {
                 dropdownMenu.style.zIndex = '100';
                 dropdownMenu.style.overflow = 'hidden';
                 
-                // Add filter options
                 const filterOptions = [
                     { id: 'all', label: 'All Services' },
                     { id: 'available', label: 'Available Only' },
@@ -1103,19 +513,11 @@ function generateServiceItems(servicesData) {
                     optionEl.style.cursor = 'pointer';
                     optionEl.style.transition = 'background-color 0.2s ease';
                     
-                    optionEl.addEventListener('mouseenter', () => {
-                        optionEl.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                    });
-                    
-                    optionEl.addEventListener('mouseleave', () => {
-                        optionEl.style.backgroundColor = 'transparent';
-                    });
-                    
+                    optionEl.addEventListener('mouseenter', () => optionEl.style.backgroundColor = 'rgba(255, 255, 255, 0.1)');
+                    optionEl.addEventListener('mouseleave', () => optionEl.style.backgroundColor = 'transparent');
                     optionEl.addEventListener('click', () => {
                         applyFilter(option.id);
                         dropdownMenu.remove();
-                        
-                        // Update button text to show current filter
                         filterBtn.innerHTML = `
                             <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
@@ -1129,218 +531,64 @@ function generateServiceItems(servicesData) {
                 
                 document.querySelector('.filter-dropdown').appendChild(dropdownMenu);
                 
-                // Add event listener to close dropdown when clicking outside
-                const closeDropdown = (e) => {
-                    if (!dropdownMenu.contains(e.target) && e.target !== filterBtn) {
-                        dropdownMenu.remove();
-                        document.removeEventListener('click', closeDropdown);
-                    }
-                };
-                
- // Delay adding the event listener to prevent it from triggering immediately
                 setTimeout(() => {
-                    document.addEventListener('click', closeDropdown);
-                }, 0);
-            };
-    
-            // Filter button click event
-            filterBtn.addEventListener('click', createFilterDropdown);
-    
-            // Function to apply the selected filter
-            const applyFilter = (filterId) => {
-                // Get all service items
-                const serviceItems = document.querySelectorAll('.service-item');
-                
-                // Animation settings for showing/hiding items
-                const hideItem = (item) => {
-                    gsap.to(item, {
-                        opacity: 0,
-                        height: 0,
-                        marginBottom: 0,
-                        duration: 0.3,
-                        onComplete: () => {
-                            item.style.display = 'none';
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!dropdownMenu.contains(e.target) && e.target !== filterBtn) {
+                            dropdownMenu.remove();
+                            document.removeEventListener('click', closeDropdown);
                         }
                     });
-                };
-                
+                }, 0);
+            }
+
+            function applyFilter(filterId) {
+                const serviceItems = document.querySelectorAll('.service-item');
+                const hideItem = (item) => gsap.to(item, { opacity: 0, height: 0, marginBottom: 0, duration: 0.3, onComplete: () => item.style.display = 'none' });
                 const showItem = (item) => {
                     item.style.display = 'grid';
-                    gsap.to(item, {
-                        opacity: 1,
-                        height: 'auto',
-                        marginBottom: '15px',
-                        duration: 0.3
-                    });
+                    gsap.to(item, { opacity: 1, height: 'auto', marginBottom: '15px', duration: 0.3 });
                 };
                 
-                // Apply the appropriate filter
                 serviceItems.forEach(item => {
                     const hasButton = item.querySelector('.take-order-btn');
                     const isAvailable = hasButton && !hasButton.classList.contains('taken');
                     const isTaken = hasButton && hasButton.classList.contains('taken');
                     const isUrgent = item.querySelector('.countdown.urgent') !== null;
-                    
-                    // Extract price value for sorting
                     const priceText = item.querySelector('.price').textContent;
                     const priceValue = parseInt(priceText.replace(/[^\d]/g, ''));
                     
                     switch(filterId) {
-                        case 'all':
-                            showItem(item);
-                            break;
-                        case 'available':
-                            isAvailable ? showItem(item) : hideItem(item);
-                            break;
-                        case 'taken':
-                            isTaken ? showItem(item) : hideItem(item);
-                            break;
-                        case 'urgent':
-                            isUrgent ? showItem(item) : hideItem(item);
-                            break;
-                        case 'price-asc':
-                            // Store price value as data attribute for sorting
-                            item.setAttribute('data-price', priceValue);
-                            showItem(item);
-                            break;
-                        case 'price-desc':
-                            // Store price value as data attribute for sorting
-                            item.setAttribute('data-price', priceValue);
-                            showItem(item);
-                            break;
+                        case 'all': showItem(item); break;
+                        case 'available': isAvailable ? showItem(item) : hideItem(item); break;
+                        case 'taken': isTaken ? showItem(item) : hideItem(item); break;
+                        case 'urgent': isUrgent ? showItem(item) : hideItem(item); break;
+                        case 'price-asc': item.setAttribute('data-price', priceValue); showItem(item); break;
+                        case 'price-desc': item.setAttribute('data-price', priceValue); showItem(item); break;
                     }
                 });
                 
-                // Handle price sorting if selected
                 if (filterId === 'price-asc' || filterId === 'price-desc') {
                     const servicesList = document.querySelector('.services-list');
                     const serviceHeader = servicesList.querySelector('.service-header');
-                    
-                    // Get all service items as an array (excluding the header)
                     const itemsArray = Array.from(serviceItems);
-                    
-                    // Sort the array based on price
                     itemsArray.sort((a, b) => {
                         const priceA = parseInt(a.getAttribute('data-price'));
                         const priceB = parseInt(b.getAttribute('data-price'));
-                        
                         return filterId === 'price-asc' ? priceA - priceB : priceB - priceA;
                     });
                     
-                    // Remove all items from the DOM
                     serviceItems.forEach(item => item.remove());
-                    
-                    // Re-add the header and sorted items
                     servicesList.appendChild(serviceHeader);
                     itemsArray.forEach((item, index) => {
                         servicesList.appendChild(item);
-                        // Staggered re-animation of the sorted items
-                        gsap.fromTo(item, 
-                            { opacity: 0, y: 20 },
-                            { 
-                                opacity: 1, 
-                                y: 0, 
-                                duration: 0.3, 
-                                delay: index * 0.05 
-                            }
-                        );
+                        gsap.fromTo(item, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, delay: index * 0.05 });
                     });
                 }
-            };
-            
-            // Start countdown update interval
-            setInterval(updateCountdowns, 60000); // Update every minute
-            
-            // Initial countdown display
+            }
+
+            setInterval(updateCountdowns, 60000);
             updateCountdowns();
-            
-            // Hamburger menu functionality
-            const hamburgerBtn = document.querySelector('.hamburger-menu');
-            hamburgerBtn.addEventListener('click', toggleMenu);
-            
-            // Close side menu when clicking outside
-            document.addEventListener('click', (e) => {
-                const sideMenu = document.querySelector('.side-menu');
-                if (sideMenu.classList.contains('open') && 
-                    !e.target.closest('.side-menu') && 
-                    !e.target.closest('.hamburger-menu')) {
-                    toggleMenu();
-                }
-            });
-            
-            // Create tooltip element for order confirmations
-            const tooltip = document.createElement('div');
-            tooltip.id = 'tooltip';
-            tooltip.style.position = 'fixed';
-            tooltip.style.padding = '8px 12px';
-            tooltip.style.backgroundColor = '#4db8ff';
-            tooltip.style.color = '#1a1a1a';
-            tooltip.style.borderRadius = '4px';
-            tooltip.style.fontSize = '14px';
-            tooltip.style.fontWeight = '500';
-            tooltip.style.zIndex = '1000';
-            tooltip.style.opacity = '0';
-            tooltip.style.pointerEvents = 'none';
-            tooltip.style.transition = 'opacity 0.3s ease';
-            document.body.appendChild(tooltip);
-            
-            // Pagination functionality (simplified for demo)
-            const paginationLinks = document.querySelectorAll('.pagination a');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remove active class from all links
-                    paginationLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Add active class to clicked link
-                    this.classList.add('active');
-                    
-                    // In a real application, you would load new data here
-                    // For the demo, we'll just show a loading animation
-                    
-                    // Show loading state
-                    const servicesList = document.querySelector('.services-list');
-                    servicesList.style.opacity = '0.5';
-                    
-                    // Simulate loading delay
-                    setTimeout(() => {
-                        // Restore opacity
-                        servicesList.style.opacity = '1';
-                    }, 800);
-                });
-            });
         });
     </script>
-    <script>
-        // === SERVICES PAGE LOGIC ===
-        fetch('/FetchOrders')
-          .then(res => res.json())
-          .then(data => {
-            const container = document.querySelector('.services-list');
-            data.forEach(order => {
-              const item = document.createElement('div');
-              item.className = 'service-item';
-              item.innerHTML = `
-                <div>${order.id}</div>
-                <div class="price">$${order.price}</div>
-                <div>${order.subject}</div>
-                <div>${order.username}</div>
-                <div>${order.timeLeft}</div>
-                <div><button onclick="updateOrderStatus(${order.id})">Take</button></div>
-              `;
-              container.appendChild(item);
-            });
-          });
-      
-        function updateOrderStatus(orderId) {
-          fetch('/UpdateOrderStatusAPI', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId, status: 'Taken' })
-          }).then(res => res.json()).then(res => alert('Order taken!'));
-        }
-      </script>
-      
 </body>
 </html>
