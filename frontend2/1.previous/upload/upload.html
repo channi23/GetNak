@@ -600,76 +600,67 @@
         }
         
         function toPay(event) {
-    if (event) event.preventDefault();
+            if (event) event.preventDefault();
 
-    var fileInput = document.getElementById("file-upload");
-    var dateInput = document.getElementById("submission-date");
-    var titleInput = document.getElementById("assignment-title");
-    var descriptionInput = document.getElementById("assignment-description");
-    var proceedBtn = document.getElementById("proceed-payment");
-    var spinner = document.getElementById("loading-spinner");
+            var fileInput = document.getElementById("file-upload");
+            var dateInput = document.getElementById("submission-date");
+            var titleInput = document.getElementById("assignment-title");
+            var descriptionInput = document.getElementById("assignment-description");
+            var proceedBtn = document.getElementById("proceed-payment");
+            var spinner = document.getElementById("loading-spinner");
 
-    var hasFile = fileInput.files.length > 0;
-    var date = dateInput.value;
-    var hasTitle = titleInput.value.trim() !== '';
-    let presentDate = new Date().toISOString().split("T")[0];
+            var hasFile = fileInput.files.length > 0;
+            var date = dateInput.value;
+            var hasTitle = titleInput.value.trim() !== '';
+            let presentDate = new Date().toISOString().split("T")[0];
 
-    if (!hasFile) {
-        alert("Please select a file to upload.");
-        return;
-    }
+            if (!hasFile) {
+                alert("Please select a file to upload.");
+                return;
+            }
 
-    if (!date) {
-        alert("Please select a submission date.");
-        return;
-    }
+            if (!date) {
+                alert("Please select a submission date.");
+                return;
+            }
 
-    if (date <= presentDate) {
-        alert("Please select a future submission date.");
-        return;
-    }
+            if (date <= presentDate) {
+                alert("Please select a future submission date.");
+                return;
+            }
 
-    if (!hasTitle) {
-        alert("Please enter an assignment title.");
-        return;
-    }
+            if (!hasTitle) {
+                alert("Please enter an assignment title.");
+                return;
+            }
 
-    // Disable button & show loading
-    proceedBtn.disabled = true;
-    proceedBtn.textContent = "Placing Order...";
-    spinner.style.display = "block";
+            // Disable button & show loading
+            proceedBtn.disabled = true;
+            proceedBtn.textContent = "Placing Order...";
+            spinner.style.display = "block";
 
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-    formData.append('submissionDate', dateInput.value);
+            try {
+                // Store data in localStorage
+                localStorage.setItem('uploadedFileName', selectedFileName);
+                localStorage.setItem('fileType', selectedFileType);
+                localStorage.setItem('filePrice', selectedFilePrice);
+                localStorage.setItem('assignmentTitle', titleInput.value);
+                localStorage.setItem('assignmentDescription', descriptionInput.value);
+                localStorage.setItem('submissionDate', dateInput.value);
 
-    fetch('/OrderPlacementAPI', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert("Order placed successfully!");
-
-        // Store data in localStorage
-        localStorage.setItem('uploadedFileName', selectedFileName);
-        localStorage.setItem('fileType', selectedFileType);
-        localStorage.setItem('filePrice', selectedFilePrice);
-        localStorage.setItem('assignmentTitle', titleInput.value);
-        localStorage.setItem('assignmentDescription', descriptionInput.value);
-
-        // Redirect after success
-        window.location.href = 'Pay/payment.html';
-    })
-    .catch(err => {
-        console.error("Error placing order:", err);
-        alert("Failed to place order. Please try again.");
-        proceedBtn.disabled = false;
-        proceedBtn.textContent = "Proceed to Payment";
-        spinner.style.display = "none";
-    });
-}
-
+                // Simulate a small delay to show the loading state
+                setTimeout(() => {
+                    // Redirect to payment page
+                    window.location.href = 'Pay/payment.html';
+                }, 1000);
+            } catch (error) {
+                console.error("Error storing order data:", error);
+                alert("Failed to place order. Please try again.");
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = "Proceed to Payment";
+                spinner.style.display = "none";
+            }
+        }
         
         // Add drag and drop functionality
         const dropArea = document.querySelector('.file-upload-container');
