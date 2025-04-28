@@ -68,17 +68,17 @@ router.post('/login', (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
             if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
 
-            // Generate JWT Token
+            // Generate JWT Token with 30 days expiration
             try {
                 const token = jwt.sign(
                     { userId: user.user_id, email: user.email },
                     process.env.JWT_SECRET, // Secret key from .env
-                    { expiresIn: "1h" } // Token expiration
+                    { expiresIn: "30d" } // Token expiration set to 30 days
                 );
 
                 res.status(200).json({
                     message: "Login successful",
-                    token: token, // ✅ Return the JWT token
+                    token: token, // Return the JWT token
                     userId: user.user_id
                 });
             } catch (error) {

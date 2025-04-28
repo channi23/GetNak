@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const uploadForm = document.getElementById("upload-form");
+    const proceedPaymentButton = document.getElementById("proceed-payment");
     const paymentSection = document.getElementById("payment-section");
-    const paymentForm = document.getElementById("payment-form");
+
+    let uploadedSuccessfully = false;
 
     // Handle upload form submission
     uploadForm.addEventListener("submit", function (event) {
@@ -20,55 +22,85 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        // Mark upload successful
+        uploadedSuccessfully = true;
+
         // Show payment section after file upload
         paymentSection.classList.remove("hidden");
+        paymentSection.style.display = "block";
+        paymentSection.scrollIntoView({ behavior: "smooth" });
     });
 
-    // Handle payment submission
-    paymentForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const cardNumber = document.getElementById("card-number").value;
-        const expirationDate = document.getElementById("expiration-date").value;
-        const cvv = document.getElementById("cvv").value;
-
-        if (!cardNumber.match(/^\d{16}$/)) {
-            alert("Enter a valid 16-digit card number.");
+    // Handle payment when "Proceed to Payment" is clicked
+    proceedPaymentButton.addEventListener("click", () => {
+        if (!uploadedSuccessfully) {
+            alert("Please complete the upload form first.");
             return;
         }
 
-        if (!expirationDate.match(/^\d{2}\/\d{2}$/)) {
-            alert("Enter a valid expiration date in MM/YY format.");
-            return;
-        }
+        fetch('http://localhost:5001/api/orders/place', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') // Assume token is saved after login
+            },
+            body: JSON.stringify({
+                serviceId: 1,   // Example service ID (change dynamically if needed)
+                providerId: 2,  // Example provider ID (change dynamically if needed)
+                price: 500      // Example price in rupees
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var options = {
+                "key": "rzp_test_m5aHLAIsonEdcl", // Your Razorpay Test Key ID
+                "amount": data.amount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "Your Company Name",
+                "description": "Payment for Uploaded Service",
+                "order_id": data.orderId, // Order ID from backend
+                "handler": function (response) {
+                    // After successful payment, verify payment with backend
+                    fetch('http://localhost:5001/api/orders/verify-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(verifyData => {
+                        if (verifyData.success) {
+                            alert("Payment successful and verified! Payment ID: " + response.razorpay_payment_id);
+                        } else {
+                            alert("Payment verification failed. Please contact support.");
+                        }
+                    })
+                    .catch(() => {
+                        alert("Error verifying payment. Please try again.");
+                    });
+                },
+                "prefill": {
+                    "name": "Your Name",
+                    "email": "youruser@email.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#F37254"
+                }
+            };
 
-        if (!cvv.match(/^\d{3}$/)) {
-            alert("Enter a valid 3-digit CVV.");
-            return;
-        }
-
-        // Open a new window with payment details
-        const paymentDetails = `
-            <h2>Payment Details</h2>
-            <p>Card Number: **** **** **** ${cardNumber.slice(-4)}</p>
-            <p>Expiration Date: ${expirationDate}</p>
-            <p>CVV: ***</p>
-            <p>Payment Successful!</p>
-        `;
-
-        const paymentWindow = window.open("", "_blank", "width=400,height=300");
-        paymentWindow.document.write(paymentDetails);
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to initiate payment. Try again.");
+        });
     });
-});
-// Get references to the elements
-const proceedPaymentButton = document.getElementById("proceed-payment");
-const paymentSection = document.getElementById("payment-section");
-
-// Add an event listener to the "Proceed to Payment" button
-proceedPaymentButton.addEventListener("click", () => {
-    // Show the payment section by changing its display style
-    paymentSection.style.display = "block";
-
-    // Optionally scroll to the payment section for better user experience
-    paymentSection.scrollIntoView({ behavior: "smooth" });
 });
