@@ -40,29 +40,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced AI response knowledge base
     const knowledgeBase = {
         greeting: [
-            "FUCK YOU !!!",
             "Hello! How can I help you today?", 
             "Hi there! Looking for freelance services?", 
-            "Welcome to GetNak! How can I assist you?",
+            "Welcome to TaskBridge! How can I assist you?",
             "Hey! Ready to find the perfect freelancer for your project?"
             
         ],
         services: {
-            general: "GetNak offers a wide range of freelance services including web development, graphic design, writing, marketing, and more. Would you like to browse a specific category?",
+            general: "TaskBridge offers a wide range of freelance services including web development, graphic design, writing, marketing, and more. Would you like to browse a specific category?",
             webDevelopment: "Our web development services include frontend and backend development, full-stack solutions, e-commerce sites, and website maintenance. Browse our services page to find the right developer for your project.",
-            design: "Graphic design services on GetNak include logo design, UI/UX design, illustration, branding, and more. Check out our services page to explore options from talented designers.",
+            design: "Graphic design services on TaskBridge include logo design, UI/UX design, illustration, branding, and more. Check out our services page to explore options from talented designers.",
             writing: "Our writing services include blog posts, copywriting, technical writing, content marketing, and more. Visit our services page to connect with professional writers.",
-            marketing: "Marketing services on GetNak include social media management, SEO, email marketing, PPC advertising, and content strategy. Browse our services page to find marketing experts.",
+            marketing: "Marketing services on TaskBridge include social media management, SEO, email marketing, PPC advertising, and content strategy. Browse our services page to find marketing experts.",
             videoProduction: "Video services include editing, animation, motion graphics, and video marketing. Check out our services page to find talented video professionals."
         },
         pricing: {
-            general: "Pricing on GetNak varies by freelancer and service type. Each freelancer sets their own rates based on experience and project requirements.",
-            fees: "GetNak charges a service fee on all transactions. This fee covers our secure payment processing, dispute resolution, and platform maintenance.",
+            general: "Pricing on TaskBridge varies by freelancer and service type. Each freelancer sets their own rates based on experience and project requirements.",
+            fees: "TaskBridge charges a service fee on all transactions. This fee covers our secure payment processing, dispute resolution, and platform maintenance.",
             tiers: "Many freelancers offer tiered pricing (Basic, Standard, Premium) with different deliverables and turnaround times for each tier.",
             negotiation: "You can negotiate with freelancers by sending a custom request with your specific budget and requirements."
         },
         payment: {
-            methods: "GetNak offers secure payments through credit/debit cards, PayPal, and bank transfers. Funds are held in escrow until you approve the delivered work.",
+            methods: "TaskBridge offers secure payments through credit/debit cards, PayPal, and bank transfers. Funds are held in escrow until you approve the delivered work.",
             security: "All payment information is encrypted and processed through secure, PCI-compliant payment gateways.",
             escrow: "Our escrow system protects both clients and freelancers by holding payment until work is completed and approved.",
             refunds: "If you're not satisfied with the delivered work, you can request revisions or a refund within 14 days of delivery."
@@ -75,14 +74,14 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         upload : {
             portfolio: "To upload your portfolio or samples, go to the 'Upload' page. You can upload images, documents, and other file types to showcase your work.",
-            formats: "GetNak supports upload of PNG, JPG, PDF, DOC/DOCX, and ZIP files. For larger files, we recommend using cloud storage links.",
+            formats: "TaskBridge supports upload of PNG, JPG, PDF, DOC/DOCX, and ZIP files. For larger files, we recommend using cloud storage links.",
             organization: "You can organize your uploads into different folders and categories to showcase different aspects of your work.",
             visibility: "Control who can see your uploads by adjusting privacy settings for each file or collection."
         },
         process: {
             hiring: "To hire a freelancer: 1) Browse services or post a job, 2) Compare proposals/portfolios, 3) Contact and discuss details, 4) Make payment through escrow, 5) Receive and approve work.",
             freelancing: "To start freelancing: 1) Create a detailed profile, 2) Upload portfolio samples, 3) Set up your service offerings, 4) Set your rates, 5) Start bidding on projects.",
-            communication: "All communication should happen through GetNak's messaging system to ensure protection under our Terms of Service.",
+            communication: "All communication should happen through TaskBridge's messaging system to ensure protection under our Terms of Service.",
             delivery: "Freelancers deliver work through our secure delivery system, which timestamps and records all submissions."
         },
         dashboard: {
@@ -100,14 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
         community: {
             discord: "Join our Discord community to connect with other freelancers and clients, share tips, and get help with platform-related questions.",
             joining: "To join our Discord community, click the 'Community' link in the navigation menu and follow the invitation link.",
-            benefits: "Our community offers networking opportunities, learning resources, and direct access to GetNak team members.",
+            benefits: "Our community offers networking opportunities, learning resources, and direct access to TaskBridge team members.",
             events: "We regularly host events, webinars, and AMAs in our Discord community to help you grow your freelance business."
         },
         security: {
-            data: "GetNak uses industry-standard encryption to protect your personal and payment data. We never store complete credit card information on our servers.",
+            data: "TaskBridge uses industry-standard encryption to protect your personal and payment data. We never store complete credit card information on our servers.",
             privacy: "Your privacy is important to us. We only collect information necessary to provide our services and never sell your data to third parties.",
             protection: "We offer dispute resolution and buyer protection for all transactions made through our platform.",
-            terms: "Review our full Terms of Service and Privacy Policy at getnak.com/terms and getnak.com/privacy."
+            terms: "Review our full Terms of Service and Privacy Policy at TaskBridge.com/terms and TaskBridge.com/privacy."
         },
         features: {
             messaging: "Our built-in messaging system allows you to communicate with freelancers/clients directly through the platform.",
@@ -122,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tips: "For best results, complete your profile with a professional photo, detailed description, and showcase your best work in your portfolio.",
             recommendation: "We recommend starting with smaller projects to build your reputation before taking on larger commitments."
         },
-        default: "I can help you find freelance services, manage projects, or learn more about GetNak. What would you like to know?"
+        default: "I can help you find freelance services, manage projects, or learn more about TaskBridge. What would you like to know?"
     };
     
     function getAIResponse(query) {
@@ -135,19 +134,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return "That is you,Nigga!!";
         }
         if(lowercaseQuery==="hariharan"||lowercaseQuery==="sri hariharan"||lowercaseQuery==="who is hariharan"||lowercaseQuery==="who is the ceo"||lowercaseQuery==="who is the founder"){
-            return "Sri Hari Haran is the Founder and CEO of GetNak"
+            return "Sri Hari Haran is the Founder and CEO of TaskBridge"
         }
         if(lowercaseQuery==="wasif"||lowercaseQuery==="wasif ahmed"||lowercaseQuery==="who is wasif"){
-            return "Wasif Ahmed is the CTO of GetNak"
+            return "Wasif Ahmed is the CTO of TaskBridge"
         }
         if(lowercaseQuery=="vamshi"||lowercaseQuery==="who is vamhsi"){
-            return "Executive Lead and CA at GetNak"
+            return "Executive Lead and CA at TaskBridge"
         }
         if(lowercaseQuery==="good bye"||lowercaseQuery==="bye"){
             return "FuckOff,this site is better without you!!"
         }
         if(lowercaseQuery==="irfan pasha"){
-            return"SuperVisor and Guide for GetNak Solutions!!"
+            return"SuperVisor and Guide for TaskBridge Solutions!!"
         }
         if(lowercaseQuery==="nigga"){
             return "https://www.youtube.com/@IShowSpeed";
@@ -411,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="ai-response">
                                 <div class="ai-response-header">
                                     <div class="ai-avatar">AI</div>
-                                    <div class="ai-title">GetNak Assistant</div>
+                                    <div class="ai-title">TaskBridge Assistant</div>
                                 </div>
                                 <div class="ai-response-content">${responseObj.text}</div>
                                 ${suggestionsHTML}
