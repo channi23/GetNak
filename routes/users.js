@@ -124,8 +124,8 @@ router.post('/google-login', async (req, res) => {
                 });
 
             } else {
-                // User does not exist, register new Google user with a default role
-                db.query("INSERT INTO users (name, email, role) VALUES (?, ?, ?)", [name, email, "user"], (err, result) => {
+                // User does not exist, register new Google user with a default role "customer"
+                db.query("INSERT INTO users (name, email, role) VALUES (?, ?, ?)", [name, email, "customer"], (err, result) => {
                     if (err) {
                         console.error("Error registering Google user:", err);
                         if (err.code === "ER_DUP_ENTRY") {
