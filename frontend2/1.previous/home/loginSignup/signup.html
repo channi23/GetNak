@@ -33,7 +33,7 @@
     <!-- GOOGLE SIGN-UP -->
     <div
       id="g_id_onload"
-      data-client_id="YOUR_GOOGLE_CLIENT_ID"
+      data-client_id="109076471452-9f25pqiu9lges5vqpeusskd6vmshhg55.apps.googleusercontent.com"
       data-auto_prompt="false"
       data-callback="handleGoogleSignup"
     ></div>
@@ -142,25 +142,17 @@
     async function handleGoogleSignup(response) {
       try {
         const token = response.credential;
-        const userInfo = jwt_decode(token);
-        
-        const res = await fetch('/api/signup/google', {
+
+        const res = await fetch('http://localhost:5001/api/users/google-login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: userInfo.email,
-            name: userInfo.name,
-            googleId: userInfo.sub
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token })
         });
-        
+
         const data = await res.json();
-        
+
         if (!res.ok) {
           if (res.status === 409) {
-            // User already exists
             alert("This Google account is already registered. Please sign in instead.");
             window.location.href = "login.html";
             return;
@@ -168,11 +160,11 @@
           alert(data.message || "Signup failed. Please try again.");
           return;
         }
-        
+
         // Save auth token and redirect
         localStorage.setItem('token', data.token);
-        window.location.href = "../dashboard.html";
-        
+        alert("Google signup successful!");
+        window.location.href = "../../home/homelogin.html"; // Corrected path
       } catch (err) {
         console.error("Error during Google signup:", err);
         alert("Google signup failed. Please try again or use email signup.");
@@ -224,7 +216,6 @@
           alert("Account created successfully!");
           window.location.href = "/frontend2/1.previous/home/homelogin.html"; // Redirect to login page
         } else {
-          // Handle specific error cases with enhanced debugging
           console.error("Signup failed:", data);
           if (res.status === 409) {
             alert("This email is already registered. Please sign in instead.");

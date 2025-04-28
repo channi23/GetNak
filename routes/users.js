@@ -101,7 +101,7 @@ router.post('/google-login', async (req, res) => {
 
         const { email, name } = ticket.getPayload();
 
-        // Check if user exists
+        // Check if user exists in the database
         db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
             if (err) {
                 console.error("Error checking email:", err);
@@ -109,9 +109,22 @@ router.post('/google-login', async (req, res) => {
             }
 
             if (results.length > 0) {
-                return res.status(200).json({ message: "Google login successful", userId: results[0].user_id });
+                // User already exists - generate JWT token
+                const user = results[0];
+                const jwtToken = jwt.sign(
+                    { userId: user.user_id, email: user.email },
+                    process.env.JWT_SECRET,
+                    { expiresIn: "30d" }
+                );
+
+                return res.status(200).json({
+                    message: "Google login successful",
+                    token: jwtToken,
+                    userId: user.user_id
+                });
+
             } else {
-                // Register new Google user with a default role
+                // User does not exist, register new Google user with a default role
                 db.query("INSERT INTO users (name, email, role) VALUES (?, ?, ?)", [name, email, "user"], (err, result) => {
                     if (err) {
                         console.error("Error registering Google user:", err);
@@ -120,13 +133,26 @@ router.post('/google-login', async (req, res) => {
                         }
                         return res.status(500).json({ error: "Internal server error" });
                     }
-                    res.status(201).json({ message: "Google login successful", userId: result.insertId });
+
+                    // After inserting new user, generate JWT token
+                    const newUserId = result.insertId;
+                    const jwtToken = jwt.sign(
+                        { userId: newUserId, email: email },
+                        process.env.JWT_SECRET,
+                        { expiresIn: "30d" }
+                    );
+
+                    return res.status(201).json({
+                        message: "Google login successful",
+                        token: jwtToken,
+                        userId: newUserId
+                    });
                 });
             }
         });
     } catch (error) {
-        console.error("Not JSON:", error.message || error.stack);
-        res.status(401).json({ message: "Invalid Google token" });
+        console.error("Google Token Verification Error:", error.message || error.stack);
+        return res.status(401).json({ message: "Invalid Google token" });
     }
 });
 

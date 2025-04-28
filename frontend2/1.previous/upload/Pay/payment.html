@@ -278,7 +278,7 @@
 </head>
 <body>
     <div class="payment-container">
-        <div class="logo fade-slide-up">LEARNING PLATFORM</div>
+        <div class="logo fade-slide-up">TaskBridge</div>
         <h1 class="fade-slide-up">Complete Your Payment</h1>
         
         <div class="file-details fade-slide-up">
@@ -423,7 +423,7 @@
             }
 
             function confirmPayment(orderId, paymentId, name, email, phone) {
-  fetch('/UpdateOrderStatusAPI', {
+  fetch('http://localhost:5001/api/orders/place', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -538,7 +538,7 @@
             
             // Continue button in success message
             document.getElementById('continue-button').addEventListener('click', function() {
-                window.location.href = "../dashboard.html";
+                window.location.href = "../../home/homelogin.html";
             });
         });
     </script>
