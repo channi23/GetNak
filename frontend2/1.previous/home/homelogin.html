@@ -102,45 +102,41 @@
   <script>
     // Load user data when the page loads
     document.addEventListener('DOMContentLoaded', function() {
-      loadUserData();
+        loadUserData(); // This will run when the page is fully loaded
     });
 
     // Load user profile data from localStorage with error handling
     function loadUserData() {
-      try {
-        // Check if we can access localStorage
-        let userData = null;
-        
-        // Safely try to access localStorage
         try {
-          const storedData = window.localStorage.getItem('user');
-          if (storedData) {
-            userData = JSON.parse(storedData);
-          }
-        } catch (storageError) {
-          console.warn("Cannot access localStorage. Using default user data.");
-          // Continue with default values - the catch block prevents the error from stopping execution
+            let userData = null;
+
+            // Safely access localStorage
+            try {
+                const storedData = window.localStorage.getItem('user');
+                if (storedData) {
+                    userData = JSON.parse(storedData); // Parse the stored user data
+                }
+            } catch (storageError) {
+                console.warn("Cannot access localStorage. Using default user data.");
+            }
+
+            if (userData) {
+                // Update the profile picture if available
+                const profilePic = document.getElementById('userProfilePic');
+                if (userData.picture) {
+                    profilePic.src = userData.picture;
+                } else {
+                    profilePic.src = "../default-avatar.png"; // Default avatar
+                }
+
+                // Update user info in dropdown
+                document.getElementById('userName').textContent = userData.name || "Guest User"; // Set the username
+                document.getElementById('userEmail').textContent = userData.email || ""; // Set the user email
+            }
+        } catch (error) {
+            console.error('Error processing user data:', error);
+            // Use default values in case of an error
         }
-        
-        // If we have user data, update the UI
-        if (userData) {
-          // Update the profile picture if available
-          const profilePic = document.getElementById('userProfilePic');
-          if (userData.picture) {
-            profilePic.src = userData.picture;
-          } else {
-            // Use a default avatar or generate one based on name
-            profilePic.src = "../default-avatar.png";
-          }
-          
-          // Update user info in dropdown
-          document.getElementById('userName').textContent = userData.name || "User";
-          document.getElementById('userEmail').textContent = userData.email || "";
-        }
-      } catch (error) {
-        console.error('Error processing user data:', error);
-        // Just use default values instead of redirecting
-      }
     }
 
     // Toggle dropdown menu

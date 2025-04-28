@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const router = express.Router();
+const cors = require('cors');
+router.use(cors());
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 const authenticateUser = require('../middleware/auth');
@@ -34,12 +36,19 @@ router.post('/signup', (req, res) => {
 
     // Hash password and insert user
     bcrypt.hash(password, saltRounds, (err, hash) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+            console.error("Error hashing password:", err);
+            return res.status(500).json({ error: "Internal server error" });
+        }
 
         db.query("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)", 
         [name, email, hash, role], (err, result) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ message: "User registered successfully!", userId: result.insertId });
+            if (err) {
+                console.error("Error inserting user:", err);
+                return res.status(500).json({ error: "Error inserting user" });
+            }
+            console.log("User inserted successfully");
+            return res.status(201).json({ message: "User registered successfully!", userId: result.insertId });
         });
     });
 });
@@ -60,17 +69,22 @@ router.post('/login', (req, res) => {
             if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
 
             // Generate JWT Token
-            const token = jwt.sign(
-                { userId: user.user_id, email: user.email },
-                process.env.JWT_SECRET, // Secret key from .env
-                { expiresIn: "1h" } // Token expiration
-            );
+            try {
+                const token = jwt.sign(
+                    { userId: user.user_id, email: user.email },
+                    process.env.JWT_SECRET, // Secret key from .env
+                    { expiresIn: "1h" } // Token expiration
+                );
 
-            res.status(200).json({
-                message: "Login successful",
-                token: token, // ✅ Return the JWT token
-                userId: user.user_id
-            });
+                res.status(200).json({
+                    message: "Login successful",
+                    token: token, // ✅ Return the JWT token
+                    userId: user.user_id
+                });
+            } catch (error) {
+                console.error("JWT signing error:", error);
+                res.status(500).json({ error: "Internal server error" });
+            }
         });
     });
 });
@@ -89,7 +103,10 @@ router.post('/google-login', async (req, res) => {
 
         // Check if user exists
         db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
-            if (err) return res.status(500).json({ error: err.message });
+            if (err) {
+                console.error("Error checking email:", err);
+                return res.status(500).json({ error: "Internal server error" });
+            }
 
             if (results.length > 0) {
                 return res.status(200).json({ message: "Google login successful", userId: results[0].user_id });
@@ -97,16 +114,18 @@ router.post('/google-login', async (req, res) => {
                 // Register new Google user with a default role
                 db.query("INSERT INTO users (name, email, role) VALUES (?, ?, ?)", [name, email, "user"], (err, result) => {
                     if (err) {
+                        console.error("Error registering Google user:", err);
                         if (err.code === "ER_DUP_ENTRY") {
                             return res.status(400).json({ message: "Email already exists" });
                         }
-                        return res.status(500).json({ error: err.message });
+                        return res.status(500).json({ error: "Internal server error" });
                     }
                     res.status(201).json({ message: "Google login successful", userId: result.insertId });
                 });
             }
         });
     } catch (error) {
+        console.error("Not JSON:", error.message || error.stack);
         res.status(401).json({ message: "Invalid Google token" });
     }
 });
