@@ -120,7 +120,9 @@ router.post('/google-login', async (req, res) => {
                 return res.status(200).json({
                     message: "Google login successful",
                     token: jwtToken,
-                    userId: user.user_id
+                    userId: user.user_id,
+                    name: user.name,
+                    email: user.email
                 });
 
             } else {
@@ -145,7 +147,9 @@ router.post('/google-login', async (req, res) => {
                     return res.status(201).json({
                         message: "Google login successful",
                         token: jwtToken,
-                        userId: newUserId
+                        userId: newUserId,
+                        name: name,
+                        email: email
                     });
                 });
             }

@@ -12,6 +12,22 @@
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <!-- jwt-decode CDN for Google sign-in -->
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+  <style>
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #555;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 0.8s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 </head>
 <body>
   <!-- Back Button -->
@@ -140,8 +156,14 @@
     
     // Google Sign-up handler
     async function handleGoogleSignup(response) {
+      const googleSignupButton = document.querySelector('.g_id_signin');
+      const originalButtonHTML = googleSignupButton.innerHTML;
+      
       try {
         const token = response.credential;
+
+        // Show loading spinner
+        googleSignupButton.innerHTML = '<div class="spinner"></div>';
 
         const res = await fetch('http://localhost:5001/api/users/google-login', {
           method: 'POST',
@@ -152,6 +174,7 @@
         const data = await res.json();
 
         if (!res.ok) {
+          googleSignupButton.innerHTML = originalButtonHTML;
           if (res.status === 409) {
             alert("This Google account is already registered. Please sign in instead.");
             window.location.href = "login.html";
@@ -161,12 +184,25 @@
           return;
         }
 
-        // Save auth token and redirect
+        // Clear old user data
+        localStorage.removeItem('user');
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+
+        // Save new user data
+        localStorage.setItem('user', JSON.stringify({
+          name: data.name,
+          email: data.email
+        }));
+
+        // Save JWT token
         localStorage.setItem('token', data.token);
+
         alert("Google signup successful!");
-        window.location.href = "../../home/homelogin.html"; // Corrected path
+        window.location.href = "../../home/homelogin.html";
       } catch (err) {
         console.error("Error during Google signup:", err);
+        googleSignupButton.innerHTML = originalButtonHTML;
         alert("Google signup failed. Please try again or use email signup.");
       }
     }
