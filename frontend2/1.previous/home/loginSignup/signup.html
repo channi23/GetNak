@@ -171,7 +171,18 @@
         
         // Save auth token and redirect
         localStorage.setItem('token', data.token);
-        window.location.href = "../dashboard.html";
+        localStorage.setItem('user', JSON.stringify({
+          name: data.name,
+          email: data.email,
+          role: data.role
+        }));
+        alert("Account created successfully!");
+        // Redirect based on role
+        if (data.role === 'provider') {
+          window.location.href = "../homelogin.html";
+        } else {
+          window.location.href = "../customerlogin.html";
+        }
         
       } catch (err) {
         console.error("Error during Google signup:", err);
@@ -221,8 +232,18 @@
         
         if (res.ok) {
           localStorage.setItem('token', data.token); // Save JWT
+          localStorage.setItem('user', JSON.stringify({
+            name: data.name,
+            email: data.email,
+            role: data.role
+          }));
           alert("Account created successfully!");
-          window.location.href = "/frontend2/1.previous/home/homelogin.html"; // Redirect to login page
+          // Redirect based on role
+          if (data.role === 'provider') {
+            window.location.href = "../provider-home.html";
+          } else {
+            window.location.href = "../customer-home.html";
+          }
         } else {
           // Handle specific error cases with enhanced debugging
           console.error("Signup failed:", data);

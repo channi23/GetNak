@@ -94,10 +94,15 @@
         
         localStorage.setItem("user", JSON.stringify({
           name: data.name || userInfo.name,
-          email: data.email || userInfo.email
+          email: data.email || userInfo.email,
+          role: data.role
         }));
         
-        window.location.href = "../homelogin.html";
+        if (data.role === 'provider') {
+          window.location.href = "../homelogin.html";
+        } else {
+          window.location.href = "../customerlogin.html";
+        }
       } catch (err) {
         console.error("Error during Google login:", err);
         alert("Google login failed. Please try again.");
@@ -129,27 +134,34 @@
           console.warn("Server unavailable, using demo mode");
           localStorage.setItem("user", JSON.stringify({
             name: "Guest User",
-            email: email
+            email: email,
+            role: "customer"
           }));
-          window.location.href = "../homelogin.html";
+          window.location.href = "../customer-home.html";
           return;
         }
         
         const data = await res.json();
         localStorage.setItem("user", JSON.stringify({
           name: data.name,
-          email: data.email
+          email: data.email,
+          role: data.role
         }));
         
-        window.location.href = "../homelogin.html";
+        if (data.role === 'provider') {
+          window.location.href = "../provider-home.html";
+        } else {
+          window.location.href = "../customer-home.html";
+        }
       } catch (err) {
         console.error("Login error:", err);
         // Fallback to demo mode
         localStorage.setItem("user", JSON.stringify({
           name: "Guest User",
-          email: document.getElementById('login-email').value
+          email: document.getElementById('login-email').value,
+          role: "customer"
         }));
-        window.location.href = "../homelogin.html";
+        window.location.href = "../customer-home.html";
       }
     });
   </script>

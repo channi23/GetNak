@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GetNak - Home</title>
+  <!-- Google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Link to stylesheet -->
+  <link rel="stylesheet" href="global.css" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../favicon.png" />
+</head>
+<body>
+  <header>
+    <div class="left-section">
+      <div class="logo">GetNak</div>
+    </div>
+
+    <nav>
+      <ul>
+        <li class="dropdown">
+          <a href="#">Find Work</a>
+          <!-- Dropdown for Find Work -->
+          <div class="dropdown-content">
+            <div class="dropdown-tiles">
+              <div class="tile">
+                <a href="../upload/upload.html">
+                  <h4>Place Order</h4>
+                </a>
+              </div>
+              <div class="tile">
+                <a href="../poll/poll.html">
+                  <h4>Community</h4>
+                  <p>Connect with peers</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="why-us.html">Why Us</a>
+          <!-- Dropdown for Why Us -->
+          <div class="dropdown-content">
+            <div class="dropdown-tiles">
+              <div class="tile">
+                <a href="../aboutus.html">
+                  <h4>About Us</h4>
+                  <p>Our mission and vision</p>
+                </a>
+              </div>
+              <div class="tile">
+                <a href="../contactus.html">
+                  <h4>Support</h4>
+                  <p>Get help when needed</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="profile-container">
+      <img src="../default-avatar.png" alt="Profile" class="profile-pic" id="userProfilePic" onclick="toggleDropdown()" />
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-info">
+          <div class="user-name" id="userName">Guest User</div>
+          <div class="user-email" id="userEmail">example@mail.com</div>
+        </div>
+        <a href="../home/profile/profile.html">My Profile</a>
+        <a href="../dashboard/dashboard.html">Dashboard</a>
+        <a href="../home/home.html" class="logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1 id="typed-text1">Find the perfect freelance services for you</h1>
+      <p id="typed-text2">Connect with talented professionals and get your projects done quickly and efficiently.</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Ask AI anything..." />
+        <div class="gear-icon">&#9881;</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 GetNak. All rights reserved.
+  </footer>
+
+  <script>
+    // Load user data when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserData(); // This will run when the page is fully loaded
+    });
+
+    // Load user profile data from localStorage with error handling
+    function loadUserData() {
+        try {
+            let userData = null;
+
+            // Safely access localStorage
+            try {
+                const storedData = window.localStorage.getItem('user');
+                if (storedData) {
+                    userData = JSON.parse(storedData); // Parse the stored user data
+                }
+            } catch (storageError) {
+                console.warn("Cannot access localStorage. Using default user data.");
+            }
+
+            if (userData) {
+                // Update the profile picture if available
+                const profilePic = document.getElementById('userProfilePic');
+                if (userData.picture) {
+                    profilePic.src = userData.picture;
+                } else {
+                    profilePic.src = "../default-avatar.png"; // Default avatar
+                }
+
+                // Update user info in dropdown
+                document.getElementById('userName').textContent = userData.name || "Guest User"; // Set the username
+                document.getElementById('userEmail').textContent = userData.email || ""; // Set the user email
+            }
+        } catch (error) {
+            console.error('Error processing user data:', error);
+            // Use default values in case of an error
+        }
+    }
+
+    // Toggle dropdown menu
+    function toggleDropdown() {
+      const dropdown = document.getElementById('profileDropdown');
+      if (dropdown.style.display === 'block') {
+        closeDropdown();
+      } else {
+        dropdown.style.display = 'block';
+      }
+    }
+
+    // Close dropdown function
+    function closeDropdown() {
+      document.getElementById('profileDropdown').style.display = 'none';
+    }
+
+    // Close dropdown when clicking outside
+    window.addEventListener("click", function(e) {
+      const dropdown = document.getElementById("profileDropdown");
+      const pic = document.querySelector(".profile-pic");
+      if (!dropdown.contains(e.target) && e.target !== pic) {
+        closeDropdown();
+      }
+    });
+
+    // Prevent clicks inside dropdown from propagating
+    document.getElementById('profileDropdown').addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') {
+        // Let link clicks work normally
+        return;
+      }
+      e.stopPropagation();
+    });
+  </script>
+  <script src="typing.js"></script>
+  <script src="ai.js"></script>
+</body>
+</html>

@@ -27,10 +27,37 @@
     max-width: 90%;
     max-height: 90vh;
     overflow: hidden;
+    position: relative;
   }
   
-  .cropper-container {
-    max-height: 70vh;
+  .crop-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .crop-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .crop-buttons button:first-child {
+    background-color: #1f7cbe;
+    color: white;
+  }
+  
+  .crop-buttons button:last-child {
+    background-color: #444;
+    color: white;
+  }
+  
+  .crop-buttons button:hover {
+    transform: translateY(-2px);
   }
 
     body {
@@ -299,17 +326,51 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .crop-container {
-  background-color: white;
+  background-color: #1a1a1a;
   padding: 20px;
   border-radius: 8px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
   position: relative;
+}
+
+.crop-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.crop-buttons button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.crop-buttons button:first-child {
+  background-color: #1f7cbe;
+  color: white;
+}
+
+.crop-buttons button:last-child {
+  background-color: #444;
+  color: white;
+}
+
+.crop-buttons button:hover {
+  transform: translateY(-2px);
 }
 
 button {
@@ -428,9 +489,11 @@ button {
         <div id="avatar-crop-modal" style="display: none;">
           <div class="crop-container">
             <img id="image-to-crop" src="" alt="Crop Avatar" />
+            <div class="crop-buttons">
+              <button onclick="cropImage()">OK</button>
+              <button onclick="closeModal()">Cancel</button>
+            </div>
           </div>
-          <button onclick="cropImage()">OK</button>
-          <button onclick="closeModal()">Cancel</button>
         </div>
         
         <form class="profile-form" id="profileForm">
@@ -584,7 +647,7 @@ button {
     // Load stored profile data on page load
     document.addEventListener('DOMContentLoaded', function() {
       loadProfileData();
-      updateAvatarInitial();
+      loadSavedAvatar();
     });
 
     // Navigation
@@ -627,6 +690,28 @@ button {
       return isValid;
     }
 
+    // Load profile data from server or localStorage
+    function loadProfileData() {
+      // Get data from localStorage
+      const profileData = JSON.parse(localStorage.getItem('profileData')) || {
+        fullName: '',
+        nickname: '',
+        work: '',
+        school: '',
+        major: ''
+      };
+      
+      // Update form fields
+      fullNameInput.value = profileData.fullName || '';
+      nicknameInput.value = profileData.nickname || '';
+      workInput.value = profileData.work || '';
+      schoolInput.value = profileData.school || '';
+      majorInput.value = profileData.major || '';
+      
+      // Load the avatar
+      loadSavedAvatar();
+    }
+
     // Profile Form Submission
     profileForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -636,63 +721,32 @@ button {
         profileLoading.style.display = 'inline-block';
         updateProfileBtn.disabled = true;
         
-        // Simulate API call
-        setTimeout(function() {
-          // Save to local storage
-          saveProfileData();
-          
-          // Update avatar
-          updateAvatarInitial();
-          
+        // Prepare profile data
+        const profileData = {
+          fullName: fullNameInput.value.trim(),
+          nickname: nicknameInput.value.trim(),
+          work: workInput.value.trim(),
+          school: schoolInput.value.trim(),
+          major: majorInput.value.trim()
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        
+        // Simulate server delay
+        setTimeout(() => {
           // Hide loading spinner
           profileLoading.style.display = 'none';
           updateProfileBtn.disabled = false;
           
+          // Update avatar if needed
+          loadSavedAvatar();
+          
           // Show success message
           showToast('Profile updated successfully!', 'success');
-        }, 1000);
+        }, 500);
       }
     });
-
-    // Save profile data to local storage
-    function saveProfileData() {
-      const profileData = {
-        fullName: fullNameInput.value.trim(),
-        nickname: nicknameInput.value.trim(),
-        work: workInput.value.trim(),
-        school: schoolInput.value.trim(),
-        major: majorInput.value.trim()
-      };
-      
-      localStorage.setItem('profileData', JSON.stringify(profileData));
-    }
-
-    // Load profile data from local storage
-    function loadProfileData() {
-      const profileData = JSON.parse(localStorage.getItem('profileData'));
-      
-      if (profileData) {
-        fullNameInput.value = profileData.fullName || '';
-        nicknameInput.value = profileData.nickname || '';
-        workInput.value = profileData.work || '';
-        schoolInput.value = profileData.school || '';
-        majorInput.value = profileData.major || '';
-      }
-    }
-
-    // Update avatar with user's initial
-    function updateAvatarInitial() {
-      const nickname = nicknameInput.value.trim();
-      const fullName = fullNameInput.value.trim();
-      
-      if (nickname) {
-        userAvatar.textContent = nickname.charAt(0).toUpperCase();
-      } else if (fullName) {
-        userAvatar.textContent = fullName.charAt(0).toUpperCase();
-      } else {
-        userAvatar.textContent = 'U';
-      }
-    }
 
     // Logout button click
     logoutBtn.addEventListener('click', function() {
@@ -977,52 +1031,85 @@ function upvote(id) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
 <script>
-  // Simple direct avatar upload without cropping
+  let cropper = null;
+
   function previewAvatar(event) {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        // Create new image element
-        const userAvatar = document.getElementById('user-avatar');
-        
-        // Clear the avatar container
-        userAvatar.innerHTML = '';
-        
-        // Create a new image element
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.alt = "User Avatar";
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "cover";
-        img.style.borderRadius = "50%";
-        
-        // Add the image to the avatar container
-        userAvatar.appendChild(img);
-        
-        // Save to local storage
-        localStorage.setItem('userAvatar', e.target.result);
-        
-        // Show success message
-        showToast('Avatar updated successfully!', 'success');
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select an image file', 'error');
+      return;
     }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image size should be less than 5MB', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // Show crop modal
+      const modal = document.getElementById('avatar-crop-modal');
+      const imageToCrop = document.getElementById('image-to-crop');
+      imageToCrop.src = e.target.result;
+      modal.style.display = 'flex';
+
+      // Initialize cropper
+      if (cropper) {
+        cropper.destroy();
+      }
+      
+      cropper = new Cropper(imageToCrop, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 1,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+      });
+    };
+    reader.readAsDataURL(file);
   }
 
-  // Load saved avatar on page load
-  function loadSavedAvatar() {
-    const savedAvatar = localStorage.getItem('userAvatar');
-    if (savedAvatar) {
+  function cropImage() {
+    if (!cropper) {
+      console.error('No cropper instance found');
+      return;
+    }
+
+    try {
+      // Get cropped canvas
+      const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300
+      });
+
+      if (!canvas) {
+        console.error('Failed to get cropped canvas');
+        return;
+      }
+
+      // Update avatar preview immediately
       const userAvatar = document.getElementById('user-avatar');
-      
+      if (!userAvatar) {
+        console.error('Avatar container not found');
+        return;
+      }
+
       // Clear the avatar container
       userAvatar.innerHTML = '';
       
-      // Create a new image element
+      // Create and setup new image element
       const img = document.createElement('img');
-      img.src = savedAvatar;
+      img.src = canvas.toDataURL('image/jpeg', 0.9);
       img.alt = "User Avatar";
       img.style.width = "100%";
       img.style.height = "100%";
@@ -1031,13 +1118,91 @@ function upvote(id) {
       
       // Add the image to the avatar container
       userAvatar.appendChild(img);
+      
+      // Save to local storage for immediate display
+      localStorage.setItem('userAvatar', canvas.toDataURL('image/jpeg', 0.9));
+      
+      // Show success message
+      showToast('Avatar updated successfully!', 'success');
+      
+      // Close modal
+      closeModal();
+    } catch (error) {
+      console.error('Error during crop process:', error);
+      showToast('Failed to crop image. Please try again.', 'error');
     }
   }
 
-  // Make sure this runs when the page loads
-  document.addEventListener('DOMContentLoaded', function() {
-    loadSavedAvatar();
-  });
+  function closeModal() {
+    const modal = document.getElementById('avatar-crop-modal');
+    modal.style.display = 'none';
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+  }
+
+  // Load saved avatar on page load
+  function loadSavedAvatar() {
+    try {
+      const userAvatar = document.getElementById('user-avatar');
+      
+      if (!userAvatar) {
+        console.error('Avatar container not found');
+        return;
+      }
+
+      // Clear the avatar container
+      userAvatar.innerHTML = '';
+
+      // Try to load saved avatar from localStorage
+      const savedAvatar = localStorage.getItem('userAvatar');
+      if (savedAvatar) {
+        const img = document.createElement('img');
+        img.src = savedAvatar;
+        img.alt = "User Avatar";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "50%";
+        userAvatar.appendChild(img);
+      } else {
+        // If no avatar is available, show initial
+        updateAvatarInitial();
+      }
+    } catch (error) {
+      console.error('Error loading avatar:', error);
+      updateAvatarInitial(); // Fallback to initials
+    }
+  }
+
+  // Update avatar with user's initial (only used as fallback)
+  function updateAvatarInitial() {
+    try {
+      const nickname = nicknameInput.value.trim();
+      const fullName = fullNameInput.value.trim();
+      const userAvatar = document.getElementById('user-avatar');
+      
+      if (!userAvatar) {
+        console.error('Avatar container not found');
+        return;
+      }
+      
+      // Only update if there's no image
+      if (!userAvatar.querySelector('img')) {
+        userAvatar.innerHTML = ''; // Clear any existing content
+        if (nickname) {
+          userAvatar.textContent = nickname.charAt(0).toUpperCase();
+        } else if (fullName) {
+          userAvatar.textContent = fullName.charAt(0).toUpperCase();
+        } else {
+          userAvatar.textContent = 'U';
+        }
+      }
+    } catch (error) {
+      console.error('Error updating avatar initial:', error);
+    }
+  }
 </script>
 </body>
 </html>
