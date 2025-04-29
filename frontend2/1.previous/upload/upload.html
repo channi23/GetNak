@@ -495,6 +495,13 @@
                     </div>
                 </div>
                 
+                <div class="file-preview" id="file-preview" style="display: none; margin: 20px 0; padding: 15px; background-color: var(--dark-surface-lighter); border-radius: var(--border-radius); border: 1px solid var(--dark-border);">
+                    <h3 style="margin-bottom: 10px; color: var(--primary-color);">File Preview</h3>
+                    <div id="preview-content" style="min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                        <p style="color: var(--dark-text-secondary);">No file selected</p>
+                    </div>
+                </div>
+                
                 <div class="price-info" id="price-info">
                     <h3>File Type: <span id="file-type-display">None</span></h3>
                     <p>Processing fee: <span class="price-amount" id="price-amount">₹0</span></p>
@@ -597,6 +604,61 @@
             // Show the price info section
             const priceInfo = document.getElementById('price-info');
             priceInfo.classList.add('visible');
+
+            // Show and update file preview
+            const previewSection = document.getElementById('file-preview');
+            const previewContent = document.getElementById('preview-content');
+            previewSection.style.display = 'block';
+
+            // Handle different file types
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '300px';
+                img.style.objectFit = 'contain';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                previewContent.innerHTML = '';
+                previewContent.appendChild(img);
+            } else if (file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.style.width = '100%';
+                iframe.style.height = '300px';
+                iframe.style.border = 'none';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    iframe.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                previewContent.innerHTML = '';
+                previewContent.appendChild(iframe);
+            } else if (file.type === 'text/plain' || file.type === 'text/html') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const pre = document.createElement('pre');
+                    pre.style.whiteSpace = 'pre-wrap';
+                    pre.style.wordWrap = 'break-word';
+                    pre.style.maxHeight = '300px';
+                    pre.style.overflowY = 'auto';
+                    pre.style.padding = '10px';
+                    pre.style.backgroundColor = 'var(--dark-input-bg)';
+                    pre.style.borderRadius = '4px';
+                    pre.textContent = e.target.result;
+                    previewContent.innerHTML = '';
+                    previewContent.appendChild(pre);
+                };
+                reader.readAsText(file);
+            } else {
+                previewContent.innerHTML = `
+                    <div style="text-align: center;">
+                        <p style="color: var(--dark-text-secondary);">Preview not available for this file type</p>
+                        <p style="font-size: 14px; color: var(--dark-text-secondary);">File: ${file.name}</p>
+                    </div>
+                `;
+            }
         }
         
         function toPay(event) {
