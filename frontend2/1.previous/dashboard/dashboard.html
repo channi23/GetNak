@@ -20,17 +20,17 @@
 
         </ul>
         <div class="sidebar-profile">
-            <img src="../sharma.png" alt="Profile">
+            <img src="../default-profile.jpg" alt="Profile">
             <div class="sidebar-profile-info">
-                <h4>sharma-ji-ka-beta</h4>
-                <p>Project himself</p>
+                <h4>User</h4>
+                <p>Member</p>
             </div>
         </div>
     </div>
 
     <header class="header container">
         <div class="logo">
-            <img src="../logo.png" alt="Logo">
+            <h1>TaskBridge</h1>
         </div>
         <div class="header-right">
             <button class="menu-toggle" id="menu-toggle">☰</button>
@@ -53,10 +53,10 @@
     <main class="container">
         <section class="profile-section">
             <div class="profile-info">
-                <img src="../sharma.png" alt="Profile Picture" class="profile-pic">
+                <img src="../default-profile.jpg" alt="Profile Picture" class="profile-pic">
                 <div class="user-details">
-                    <h2>sharma-ji-ka-beta</h2>
-                    <p>Project himself</p>
+                    <h2>User</h2>
+                    <p>Member</p>
                 </div>
             </div>
             <div class="profile-stats">
@@ -95,7 +95,7 @@
                     <div class="result-header-content">
                         <div>
                             <h2 id="result-order-number">Order #FY-2024-001</h2>
-                            <p id="result-customer-name">sharma-ji-ka-beta</p>
+                            <p id="result-customer-name">User</p>
                         </div>
                         <button id="back-btn" class="back-btn">← Back</button>
                     </div>
@@ -165,7 +165,7 @@
                     <div class="result-header-content">
                         <div>
                             <h2 id="helping-result-order-number">Order #FY-2024-002</h2>
-                            <p id="helping-result-customer-name">Customer: john_doe</p>
+                            <p id="helping-result-customer-name">Customer: User</p>
                         </div>
                         <button id="helping-back-btn" class="back-btn">← Back</button>
                     </div>
@@ -210,35 +210,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUserId = 'sharma-ji-ka-beta'; // Hardcoded for demo
+            const currentUserId = 'user'; // Hardcoded for demo
 
             // Initialize localStorage data if not present
             if (!localStorage.getItem('notifications')) {
                 const initialNotifications = [
                     {
                         id: 1,
-                        userId: 'sharma-ji-ka-beta',
+                        userId: 'user',
                         title: 'Your order FY-2024-001 is complete',
                         time: '2025-04-17T10:00:00Z',
                         read: false
                     },
                     {
                         id: 2,
-                        userId: 'sharma-ji-ka-beta',
+                        userId: 'user',
                         title: 'Platform update v2.3 is available',
                         time: '2025-04-16T09:00:00Z',
                         read: false
                     },
                     {
                         id: 3,
-                        userId: 'sharma-ji-ka-beta',
+                        userId: 'user',
                         title: 'Your community post received 42 upvotes',
                         time: '2025-04-15T08:00:00Z',
                         read: false
                     },
                     {
                         id: 4,
-                        userId: 'sharma-ji-ka-beta',
+                        userId: 'user',
                         title: 'Welcome to Dashboard!',
                         time: '2025-04-10T07:00:00Z',
                         read: true
@@ -251,7 +251,7 @@
                 const initialOrders = [
                     {
                         orderNumber: 'FY-2024-001',
-                        customerId: 'sharma-ji-ka-beta',
+                        customerId: 'user',
                         helperId: 'john_doe',
                         status: 'Completed',
                         created: '2025-03-15',
@@ -260,7 +260,7 @@
                     },
                     {
                         orderNumber: 'FY-2024-003',
-                        customerId: 'sharma-ji-ka-beta',
+                        customerId: 'user',
                         helperId: 'jane_smith',
                         status: 'In Progress',
                         created: '2025-04-01',
@@ -271,7 +271,7 @@
                     {
                         orderNumber: 'FY-2024-002',
                         customerId: 'john_doe',
-                        helperId: 'sharma-ji-ka-beta',
+                        helperId: 'user',
                         status: 'In Progress',
                         created: '2025-03-25',
                         completed: null,
@@ -281,7 +281,7 @@
                     {
                         orderNumber: 'FY-2024-004',
                         customerId: 'jane_smith',
-                        helperId: 'sharma-ji-ka-beta',
+                        helperId: 'user',
                         status: 'In Progress',
                         created: '2025-04-02',
                         completed: null,
