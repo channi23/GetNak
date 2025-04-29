@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - TaskBridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home/global.css">
+    <style>
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        .about-section {
+            margin-bottom: 60px;
+            background-color: rgba(31, 31, 31, 0.95);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .about-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ffffff, #d9d9d9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .value-card {
+            background-color: #232323;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .value-card:hover {
+            background-color: #3b3b3b;
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+        .value-card p {
+            font-size: 1rem;
+            color: #cccccc;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+        .left-section {
+            flex: 1;
+        }
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .right-section {
+            flex: 1;
+        }
+        .back-button {
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #ffffff;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="left-section">
+            <div class="logo">TaskBridge</div>
+        </div>
+        <nav>
+            <ul>
+                <li class="dropdown">
+                    <a href="home/homelogin.html" class="back-button">Home</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="right-section"></div>
+    </header>
+
+    <main class="about-container">
+        <section class="about-section">
+            <h2>About TaskBridge</h2>
+            <p>TaskBridge is a revolutionary freelance marketplace that connects talented professionals with clients worldwide. Our platform is designed to make the process of finding and completing freelance work seamless, efficient, and rewarding for everyone involved.</p>
+        </section>
+
+        <section class="about-section">
+            <h2>Our Mission</h2>
+            <p>We're on a mission to empower freelancers and businesses by creating a trusted platform where talent meets opportunity. We believe in the power of remote work and the global talent pool, and we're committed to making freelance work accessible to everyone.</p>
+        </section>
+
+        <section class="about-section">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>Trust & Security</h3>
+                    <p>We prioritize the safety and security of our community, ensuring a trustworthy environment for all users.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Innovation</h3>
+                    <p>We continuously evolve our platform to meet the changing needs of the freelance community.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Community</h3>
+                    <p>We foster a supportive community where freelancers can grow and businesses can thrive.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 TaskBridge. All Rights Reserved.</p>
+    </footer>
+</body>
+</html> 
