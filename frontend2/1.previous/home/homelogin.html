@@ -128,8 +128,8 @@
 
             if (userData) {
                 const profilePic = document.getElementById('userProfilePic');
-                if (userData.picture) {
-                    profilePic.src = userData.picture;
+                if (userData.picture || userData.photoURL) {
+                    profilePic.src = userData.picture || userData.photoURL;
                 } else {
                     profilePic.src = "../default-avatar.png";
                 }
